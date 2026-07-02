@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoasterQuiz - Ultimate Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen">
+
+    <div id="modal-settings-guest" class="fixed inset-0 z-[200] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl">
+            <div class="flex justify-center items-center mb-8 relative">
+                <h2 class="text-2xl font-black font-title uppercase tracking-widest">Réglages</h2>
+                <button type="button" onclick="closeSettings()" class="modal-close-btn absolute -right-2 top-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="flex flex-col gap-3 mb-8">
+                <button type="button" onclick="closeSettings(); openRegister('guest')" class="bg-[#E6DAC6] text-[#10172b] py-2.5 rounded-xl font-bold font-button uppercase text-sm">Créer un compte</button>
+                <button type="button" onclick="closeSettings(); openLogin('guest')" class="bg-[#D1D5DB] text-[#374151] py-2.5 rounded-xl font-bold font-button uppercase text-sm">Se connecter</button>
+            </div>
+            <div class="flex flex-col gap-3">
+                <label class="font-button text-xs uppercase font-bold opacity-60">Volume</label>
+                <input type="range" class="w-full accent-[#660000] volume-slider">
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-settings-landing" class="fixed inset-0 z-[200] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl">
+            <div class="flex justify-center items-center mb-8 relative">
+                <h2 class="text-2xl font-black font-title uppercase tracking-widest">Réglages</h2>
+                <button type="button" onclick="closeSettings()" class="modal-close-btn absolute -right-2 top-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="flex flex-col gap-3 mb-8">
+                <button type="button" onclick="closeSettings(); openRegister('landing')" class="bg-[#E6DAC6] text-[#10172b] py-2.5 rounded-xl font-bold font-button uppercase text-sm">Créer un compte</button>
+                <button type="button" onclick="closeSettings(); openLogin('landing')" class="bg-[#D1D5DB] text-[#374151] py-2.5 rounded-xl font-bold font-button uppercase text-sm">Se connecter</button>
+                <button type="button" onclick="openAdminAccess()" class="bg-[#660000] hover:bg-[#800000] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm transition">Accès admin</button>
+            </div>
+            <div class="flex flex-col gap-3">
+                <label class="font-button text-xs uppercase font-bold opacity-60">Volume</label>
+                <input type="range" class="w-full accent-[#660000] volume-slider">
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-settings-user" class="fixed inset-0 z-[200] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl">
+            <div class="flex justify-center items-center mb-8 relative">
+                <h2 class="text-2xl font-black font-title uppercase tracking-widest">Réglages</h2>
+                <button type="button" onclick="closeSettings()" class="modal-close-btn absolute -right-2 top-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="flex flex-col gap-3 mb-6">
+                <label class="font-button text-xs uppercase font-bold opacity-60">Volume</label>
+                <input type="range" class="w-full accent-[#660000] volume-slider">
+                <button type="button" onclick="logoutUser()" class="w-full bg-[#6B7280] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm hover:bg-[#4B5563] transition flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Se déconnecter
+                </button>
+            </div>
+            <button type="button" onclick="openDeleteAccountConfirm()" class="delete-account-card">Supprimer mon compte</button>
+        </div>
+    </div>
+
+    <div id="modal-settings-admin" class="fixed inset-0 z-[200] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl">
+            <div class="flex justify-center items-center mb-8 relative">
+                <h2 class="text-2xl font-black font-title uppercase tracking-widest">Réglages</h2>
+                <button type="button" onclick="closeAdminSettings()" class="modal-close-btn absolute -right-2 top-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="flex flex-col gap-3">
+                <label class="font-button text-xs uppercase font-bold opacity-60">Volume</label>
+                <input type="range" class="w-full accent-[#660000] volume-slider">
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-delete-account" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative delete-confirm-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Vous êtes sûrs ?</h2>
+                <button type="button" onclick="closeDeleteAccountConfirm()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p class="text-xs opacity-60 mb-8">Cette action est irréversible</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeDeleteAccountConfirm()" class="delete-btn-back">Non, revenir en arrière</button>
+                <button type="button" onclick="confirmDeleteAccount()" class="delete-btn-confirm">Oui, je sais ce que je fais</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-change-status-confirm" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="closeChangeStatusConfirm()"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Modifier le statut</h2>
+                <button type="button" onclick="closeChangeStatusConfirm()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p id="change-status-quiz-name" class="font-bold text-base mb-3 font-title"></p>
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div id="change-status-from-badge" class="status-change-badge"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 opacity-60 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+                <div id="change-status-to-badge" class="status-change-badge"></div>
+            </div>
+            <p id="change-status-description" class="text-xs opacity-60 mb-8"></p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeChangeStatusConfirm()" class="change-password-btn-cancel w-1/2">Annuler</button>
+                <button type="button" onclick="executeChangeStatus()" class="change-password-btn-submit w-1/2">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-delete-game-confirm" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="closeDeleteGameConfirm()"></div>
+        <div class="relative delete-confirm-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Supprimer ce jeu ?</h2>
+                <button type="button" onclick="closeDeleteGameConfirm()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p id="delete-game-confirm-text" class="text-xs opacity-60 mb-8">Voulez-vous vraiment supprimer ce jeu ? Cette action est irréversible.</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeDeleteGameConfirm()" class="delete-btn-back w-1/2">Non, revenir en arrière</button>
+                <button type="button" onclick="executeDeleteGame()" class="delete-btn-confirm w-1/2">Oui, supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cq-delete-online" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="cqCloseDeleteOnlineModal()"></div>
+        <div class="relative delete-confirm-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Impossible</h2>
+                <button type="button" onclick="cqCloseDeleteOnlineModal()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p class="text-xs opacity-60 mb-8">Ce quiz est en ligne, impossible de le supprimer</p>
+            <div class="flex gap-3 justify-center">
+                <button type="button" onclick="cqCloseDeleteOnlineModal()" class="delete-btn-confirm w-1/2">Retour</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cq-confirm-create" class="fixed inset-0 z-[230] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="cqCloseConfirmCreateQuiz()"></div>
+        <div class="relative delete-confirm-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Créer ce quiz ?</h2>
+                <button type="button" onclick="cqCloseConfirmCreateQuiz()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p id="cq-confirm-create-error" class="text-xs opacity-60 mb-6 hidden"></p>
+            <p class="text-xs opacity-60 mb-2">Les slides et réponses seront enregistrées en mode <b>hors ligne</b>.</p>
+            <p class="text-xs opacity-60 mb-8">Action définitive.</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="cqCloseConfirmCreateQuiz()" class="delete-btn-back w-1/2">Annuler</button>
+                <button type="button" onclick="cqConfirmCreateQuiz()" class="delete-btn-confirm w-1/2">Oui, créer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cq-confirm-rename" class="fixed inset-0 z-[230] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="cqCloseRenameModal()"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-6 relative">
+                <h2 class="text-2xl font-black font-title uppercase tracking-widest">Renommer le quiz</h2>
+                <button type="button" onclick="cqCloseRenameModal()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-4 mb-6">
+                <label class="font-button text-xs uppercase font-bold opacity-60">Nouveau nom</label>
+                <input id="cq-rename-input" type="text" class="admin-input" autocomplete="off" value="" />
+                <p id="cq-rename-error" class="admin-error hidden"></p>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button" onclick="cqCloseRenameModal()" class="delete-btn-back w-1/2">Annuler</button>
+                <button type="button" onclick="cqConfirmRenameQuiz()" class="delete-btn-confirm w-1/2">Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cq-confirm-delete-diapo" class="fixed inset-0 z-[240] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="cqCloseConfirmDeleteDiapo()"></div>
+        <div class="relative delete-confirm-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Supprimer cette diapo ?</h2>
+                <button type="button" onclick="cqCloseConfirmDeleteDiapo()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p id="cq-confirm-delete-diapo-text" class="text-xs opacity-60 mb-8">Cette action est irréversible.</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="cqCloseConfirmDeleteDiapo()" class="delete-btn-back w-1/2">Annuler</button>
+                <button type="button" onclick="cqConfirmDeleteDiapo()" class="delete-btn-confirm w-1/2">Oui, supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cq-categories" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="cqCloseCategoriesModal()"></div>
+        <div class="relative delete-confirm-card w-full max-w-5xl max-h-[88vh] p-8 rounded-3xl shadow-2xl flex flex-col text-left">
+            <div class="flex justify-between items-center mb-2 shrink-0">
+                <h2 class="text-xl md:text-2xl font-black font-title uppercase tracking-widest text-white">Gérer les catégories</h2>
+                <button type="button" onclick="cqCloseCategoriesModal()" class="modal-close-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between mb-5 shrink-0 gap-4 flex-wrap">
+                <p class="text-xs opacity-60 font-button max-w-md leading-relaxed">Assignation des catégories par jeu</p>
+                <button id="cq-add-category-btn" type="button" onclick="cqAddCategory()" class="cqcat-add-category-btn">+ Nouvelle catégorie</button>
+            </div>
+
+            <div id="cq-categories-modal-list" class="flex flex-col gap-4 overflow-y-auto custom-scroll pr-2 flex-1"></div>
+        </div>
+    </div>
+
+    <!-- Modale favoris depuis page de jeu (quand les 3 slots sont pris) -->
+    <div id="modal-cq-favorites-gamepage" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="cqCloseFavoritesGamePageModal()"></div>
+        <div class="relative delete-confirm-card w-full max-w-md max-h-[80vh] p-8 rounded-3xl shadow-2xl flex flex-col text-left">
+            <div class="flex justify-between items-center mb-2 shrink-0">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest text-white">Mes favoris</h2>
+                <button type="button" onclick="cqCloseFavoritesGamePageModal()" class="modal-close-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p class="text-xs text-white opacity-70 mb-1 shrink-0">Vous avez déjà indiqué 3 jeux en favoris.</p>
+            <p class="text-xs opacity-60 font-button mb-4 shrink-0">(<span id="cq-favorites-gamepage-modal-count">0/3</span>)</p>
+            <div id="cq-favorites-gamepage-modal-list" class="flex flex-col gap-2 overflow-y-auto custom-scroll pr-2 flex-1"></div>
+            <div class="flex justify-end gap-3 mt-5 shrink-0">
+                <button type="button" onclick="cqCloseFavoritesGamePageModal()" class="cqcat-confirm-no">Annuler</button>
+                <button type="button" onclick="cqConfirmFavoritesGamePageSelection()" class="cqcat-assign-btn">Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cq-favorites" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="cqCloseFavoritesModal()"></div>
+        <div class="relative delete-confirm-card w-full max-w-md max-h-[80vh] p-8 rounded-3xl shadow-2xl flex flex-col text-left">
+            <div class="flex justify-between items-center mb-2 shrink-0">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest text-white">Mes favoris</h2>
+                <button type="button" onclick="cqCloseFavoritesModal()" class="modal-close-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <p class="text-xs opacity-60 font-button mb-4 shrink-0">(<span id="cq-favorites-modal-count">0/3</span>)</p>
+
+            <div id="cq-favorites-modal-list" class="flex flex-col gap-2 overflow-y-auto custom-scroll pr-2 flex-1"></div>
+
+            <div class="flex justify-end gap-3 mt-5 shrink-0">
+                <button type="button" onclick="cqCloseFavoritesModal()" class="cqcat-confirm-no">Annuler</button>
+                <button type="button" onclick="cqConfirmFavoritesSelection()" class="cqcat-assign-btn">Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cq-filter" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30" onclick="closeCqFilterModal()"></div>
+        <div class="relative delete-confirm-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-6 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest text-white">Trier les jeux</h2>
+                <button type="button" onclick="closeCqFilterModal()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            
+            <div class="text-left space-y-5 mb-8">
+                <div>
+                    <label class="font-button text-xs uppercase font-bold opacity-60 mb-2 block">Trier par</label>
+                    <select id="cq-filter-criteria" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm outline-none font-button text-white font-medium focus:border-red-500 transition">
+                        <option value="date" class="bg-[#374151] text-white">Date de création</option>
+                        <option value="alphabetical" class="bg-[#374151] text-white">Ordre alphabétique</option>
+                        <option value="type" class="bg-[#374151] text-white">Type (QCM...)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="font-button text-xs uppercase font-bold opacity-60 mb-2 block">Ordre</label>
+                    <select id="cq-filter-direction" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm outline-none font-button text-white font-medium focus:border-red-500 transition">
+                        <option value="desc" class="bg-[#374151] text-white">Décroissant (plus récent / Z-A)</option>
+                        <option value="asc" class="bg-[#374151] text-white">Croissant (plus ancien / A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button" onclick="closeCqFilterModal()" class="delete-btn-back w-1/2">Annuler</button>
+                <button type="button" onclick="cqApplyFilters()" class="delete-btn-confirm w-1/2">Appliquer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-change-password" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative change-password-modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl">
+            <div class="flex justify-center items-center mb-8 relative">
+                <h2 class="text-2xl font-black font-title uppercase tracking-widest">Changer de mot de passe</h2>
+                <button type="button" onclick="closeChangePassword()" class="modal-close-btn absolute -right-2 top-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="flex flex-col gap-5 mb-8">
+                <div class="w-full">
+                    <label class="change-password-label" for="change-old-password">Ancien mot de passe</label>
+                    <div class="password-input-wrapper" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 0.75rem; padding: 0 0.75rem;">
+                        <input type="password" id="change-old-password" class="change-password-field" placeholder="••••••••" autocomplete="current-password" style="border: none; background: transparent; padding: 0.75rem 0;">
+                        <button type="button" onclick="toggleFormPasswordVisibility('change-old-password')" class="password-toggle-btn" tabindex="-1" style="color: rgba(255, 255, 255, 0.6);">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="w-full">
+                    <label class="change-password-label" for="change-new-password">Nouveau mot de passe</label>
+                    <div class="password-input-wrapper" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 0.75rem; padding: 0 0.75rem;">
+                        <input type="password" id="change-new-password" class="change-password-field" placeholder="••••••••" autocomplete="new-password" oninput="updateChangePasswordStrength()" style="border: none; background: transparent; padding: 0.75rem 0;">
+                        <button type="button" onclick="toggleFormPasswordVisibility('change-new-password')" class="password-toggle-btn" tabindex="-1" style="color: rgba(255, 255, 255, 0.6);">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="change-password-strength-wrap" class="w-full hidden">
+                    <div class="password-strength-track">
+                        <div id="change-password-strength-fill" class="password-strength-fill"></div>
+                    </div>
+                    <p id="change-password-strength-label" class="text-[10px] font-button uppercase opacity-50 mt-1.5 text-center"></p>
+                </div>
+
+                <div class="w-full">
+                    <label class="change-password-label" for="change-confirm-password">Confirmation nouveau mot de passe</label>
+                    <div class="password-input-wrapper" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 0.75rem; padding: 0 0.75rem;">
+                        <input type="password" id="change-confirm-password" class="change-password-field" placeholder="••••••••" autocomplete="new-password" style="border: none; background: transparent; padding: 0.75rem 0;">
+                        <button type="button" onclick="toggleFormPasswordVisibility('change-confirm-password')" class="password-toggle-btn" tabindex="-1" style="color: rgba(255, 255, 255, 0.6);">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <p id="change-password-error" class="change-password-error w-full"></p>
+            </div>
+
+            <div class="change-password-buttons">
+                <button type="button" onclick="closeChangePassword()" class="change-password-btn-cancel">Annuler</button>
+                <button type="button" onclick="submitChangePassword()" class="change-password-btn-submit">Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-change-password-confirm" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative delete-confirm-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Vous êtes sûrs ?</h2>
+                <button type="button" onclick="closeChangePasswordConfirm()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p class="text-xs opacity-60 mb-8">Vous allez changer votre mot de passe</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeChangePasswordConfirm()" class="delete-btn-back">Non, revenir en arrière</button>
+                <button type="button" onclick="confirmChangePassword()" class="delete-btn-confirm">Oui, continuer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-change-pseudo" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl">
+            <div class="flex justify-center items-center mb-8 relative">
+                <h2 class="text-2xl font-black font-title uppercase tracking-widest">Changer le pseudo</h2>
+                <button type="button" onclick="closeChangePseudo()" class="modal-close-btn absolute -right-2 top-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="flex flex-col gap-5 mb-8">
+                <div class="w-full">
+                    <label class="change-password-label" for="change-pseudo-input">Nouveau pseudo</label>
+                    <input type="text" id="change-pseudo-input" class="admin-input" placeholder="Votre nouveau pseudo" autocomplete="off" />
+                </div>
+                <p id="change-pseudo-error" class="change-password-error w-full"></p>
+            </div>
+
+            <div class="change-password-buttons">
+                <button type="button" onclick="closeChangePseudo()" class="change-password-btn-cancel">Annuler</button>
+                <button type="button" onclick="submitChangePseudo()" class="change-password-btn-submit">Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-change-pseudo-confirm" class="fixed inset-0 z-[220] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative delete-confirm-card w-full max-w-md p-8 rounded-3xl shadow-2xl text-center">
+            <div class="flex justify-center items-center mb-4 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Vous êtes sûrs ?</h2>
+                <button type="button" onclick="closeChangePseudoConfirm()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p class="text-xs opacity-60 mb-8">Vous allez changer votre pseudo</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeChangePseudoConfirm()" class="delete-btn-back">Non, revenir en arrière</button>
+                <button type="button" onclick="confirmChangePseudo()" class="delete-btn-confirm">Oui, continuer</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-admin-access" class="fixed inset-0 z-[210] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl">
+            <div class="flex justify-center items-center mb-8 relative">
+                <h2 class="text-2xl font-black font-title uppercase tracking-widest">Accès admin</h2>
+                <button type="button" onclick="closeAdminAccess()" class="modal-close-btn absolute -right-2 top-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <form class="flex flex-col gap-4" onsubmit="submitAdminPassword(event)">
+                <label class="font-button text-xs uppercase font-bold opacity-60">Mot de passe</label>
+                <div class="password-input-wrapper" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 0.75rem; padding: 0 0.75rem;">
+                    <input type="password" id="admin-password-input" class="admin-input" placeholder="••••••••" autocomplete="off" style="border: none; background: transparent; padding: 0.75rem 0;">
+                    <button type="button" onclick="toggleFormPasswordVisibility('admin-password-input')" class="password-toggle-btn" tabindex="-1" style="color: rgba(255, 255, 255, 0.6);">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    </button>
+                </div>
+                <p id="admin-password-error" class="admin-error"></p>
+                <button type="submit" class="bg-[#660000] hover:bg-[#800000] text-white py-3 rounded-xl font-bold font-button uppercase text-sm transition">Valider</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-content">
+
+        <div id="view-landing" class="min-h-screen flex flex-col justify-between relative z-10">
+            <div class="coaster-bg"></div>
+            <header class="w-full py-6 px-8 flex justify-end relative z-10">
+                <button type="button" onclick="openLandingSettings()" class="p-2 rounded-lg border border-[#10172b] hover:bg-[#10172b]/5 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </button>
+            </header>
+            <main class="flex-1 flex flex-col items-center justify-center px-4 relative z-10">
+                <div class="text-center max-w-xl w-full">
+                    <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-8 font-title">
+                        Coaster<span class="text-[var(--score-color)]">Quiz</span>
+                    </h1>
+                    <div class="flex flex-col gap-3 items-center w-full max-w-md mx-auto mb-6">
+                        <button type="button" onclick="openLogin('landing')" class="w-full bg-[#D1D5DB] text-[#374151] font-bold py-3.5 px-6 rounded-xl font-button">Se connecter</button>
+                        <button type="button" onclick="openRegister('landing')" class="w-full bg-[#660000] hover:bg-[#800000] text-white font-bold py-3.5 px-6 rounded-xl font-button transition">Créer un compte</button>
+                    </div>
+                    <button onclick="showView('view-guest-home')" class="border-2 btn-guest-landing font-bold py-3.5 px-10 rounded-xl font-button transition hover:bg-[#10172b]/5">Mode Invité</button>
+                </div>
+            </main>
+            <footer class="w-full py-6 text-center text-xs opacity-50 relative z-10"><p>&copy; 2026 CoasterQuiz</p></footer>
+        </div>
+
+        <header id="auth-header" class="w-full py-3 px-6 bg-[var(--banner-bg)] text-[var(--banner-text)] flex justify-between items-center shadow-md hidden relative z-[100]">
+            <div class="text-2xl font-black font-title cursor-pointer" onclick="showView('view-landing')">Coaster<span class="text-[var(--score-color)]">Quiz</span></div>
+            <button type="button" onclick="openAuthSettings()" class="p-2 rounded-lg border border-[var(--banner-border)] hover:bg-black/5 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            </button>
+        </header>
+
+        <div id="view-register" class="hidden relative z-10 auth-page">
+            <main class="max-w-sm w-full mx-auto px-6 py-10 flex flex-col items-center">
+                <h1 id="register-page-title" class="text-3xl md:text-4xl font-black font-title mb-8 text-[var(--coaster-color)]">Créer un compte</h1>
+
+                <div id="register-form-block" class="w-full flex flex-col items-center gap-5">
+                    <div class="avatar-circle" id="register-avatar-preview"></div>
+
+                    <div class="w-full">
+                        <label class="auth-field-label" for="register-pseudo">Pseudo</label>
+                        <input type="text" id="register-pseudo" class="auth-field" placeholder="Votre pseudo" autocomplete="username">
+                    </div>
+
+                    <div class="w-full">
+                        <label class="auth-field-label" for="register-password">Mot de passe</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="register-password" class="auth-field" placeholder="••••••••" autocomplete="new-password" oninput="updatePasswordStrength()">
+                            <button type="button" onclick="toggleFormPasswordVisibility('register-password')" class="password-toggle-btn" tabindex="-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="password-strength-wrap" class="w-full hidden">
+                        <div class="password-strength-track">
+                            <div id="password-strength-fill" class="password-strength-fill"></div>
+                        </div>
+                        <p id="password-strength-label" class="text-[10px] font-button uppercase opacity-50 mt-1.5 text-center"></p>
+                    </div>
+
+                    <div class="w-full">
+                        <label class="auth-field-label" for="register-password-confirm">Confirmer le mot de passe</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="register-password-confirm" class="auth-field" placeholder="••••••••" autocomplete="new-password">
+                            <button type="button" onclick="toggleFormPasswordVisibility('register-password-confirm')" class="password-toggle-btn" tabindex="-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p id="register-error" class="auth-error w-full"></p>
+
+                    <button type="button" onclick="submitRegister()" class="auth-btn-primary">Valider</button>
+                    <button type="button" onclick="openLogin()" class="auth-btn-secondary">Se Connecter</button>
+                </div>
+
+                <div id="register-success-block" class="hidden w-full flex-col items-center gap-5" style="display:none;">
+                    <div class="avatar-circle" id="register-avatar-success"></div>
+                    <p class="register-success-pseudo" id="register-success-pseudo"></p>
+                    <h2 class="text-3xl md:text-4xl font-black font-title text-[var(--coaster-color)]">Compte créé</h2>
+                    <button type="button" onclick="openLogin()" class="auth-btn-secondary w-full max-w-xs">Se Connecter</button>
+                    <button type="button" onclick="showView('view-landing')" class="auth-btn-primary w-full max-w-xs">Revenir à l'accueil</button>
+                </div>
+            </main>
+        </div>
+
+        <div id="view-login" class="hidden relative z-10 auth-page">
+            <main class="max-w-sm w-full mx-auto px-6 py-10 flex flex-col items-center">
+                <h1 class="text-3xl md:text-4xl font-black font-title mb-8 text-[var(--coaster-color)]">Se connecter</h1>
+
+                <div class="w-full flex flex-col items-center gap-5">
+                    <div class="w-full">
+                        <label class="auth-field-label" for="login-pseudo">Pseudo</label>
+                        <input type="text" id="login-pseudo" class="auth-field" placeholder="Votre pseudo" autocomplete="username">
+                    </div>
+
+                    <div class="w-full">
+                        <label class="auth-field-label" for="login-password">Mot de passe</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="login-password" class="auth-field" placeholder="••••••••" autocomplete="current-password">
+                            <button type="button" onclick="toggleFormPasswordVisibility('login-password')" class="password-toggle-btn" tabindex="-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p id="login-error" class="auth-error w-full"></p>
+
+                    <button type="button" onclick="submitLogin()" class="auth-btn-secondary">Se Connecter</button>
+                    <button type="button" onclick="openRegister()" class="auth-btn-primary">Créer un compte</button>
+                </div>
+            </main>
+        </div>
+
+        <header id="common-guest-header" class="w-full py-3 px-6 bg-[var(--banner-bg)] text-[var(--banner-text)] flex justify-between items-center shadow-md hidden relative z-[100]">
+            <div class="flex items-center gap-6">
+                <div class="text-2xl font-black font-title cursor-pointer" onclick="showView('view-landing')">Coaster<span class="text-[var(--score-color)]">Quiz</span></div>
+                
+                <nav class="flex items-center">
+                    <button id="nav-btn-home" class="bg-[var(--score-color)] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button mr-2 hidden">Accueil</button>
+                    <button id="nav-toggle-games" class="bg-[var(--score-color)] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button mr-4">Tous les jeux</button>
+                    
+                    <div id="banner-categories-nav" class="flex items-center gap-1">
+                    </div>
+                </nav>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div id="header-auth-buttons" class="flex items-center gap-2">
+                    <button type="button" onclick="openRegister('guest')" class="bg-[var(--header-secondary-bg)] text-[var(--header-secondary-text)] px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button">Créer un compte</button>
+                    <button type="button" onclick="openLogin('guest')" class="bg-[var(--header-muted-bg)] text-[var(--header-muted-text)] px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button">Se connecter</button>
+                </div>
+                <div id="header-profile-button" class="hidden flex items-center gap-2">
+                    <button type="button" onclick="logoutUser()" class="bg-[var(--header-logout-bg)] text-[var(--header-logout-text)] px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button hover:bg-[var(--header-logout-hover)] transition flex items-center gap-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3h15" />
+                        </svg>
+                        Se déconnecter
+                    </button>
+                    <button id="header-my-profile-button" type="button" onclick="showView('view-user-profile')" class="bg-[var(--score-color)] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button hover:bg-[var(--score-hover)] transition">Mon Profil</button>
+                </div>
+                <div class="relative flex items-center">
+                    <input id="search-guest" type="text" placeholder="Chercher un jeu" autocomplete="off" class="bg-white/20 border border-black/10 rounded-lg py-1.5 pl-3 pr-10 text-xs outline-none w-48 font-medium" oninput="cqSearchGuest(this.value)" onkeydown="cqSearchKeydown(event,'search-guest-dropdown',false)" onfocus="cqSearchGuest(this.value)" onblur="cqSearchBlur('search-guest-dropdown')">
+                    <div class="absolute right-3 opacity-60"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg></div>
+                    <div id="search-guest-dropdown" class="cq-search-dropdown hidden"></div>
+                </div>
+                <button type="button" onclick="openSettings()" class="p-2 rounded-lg border border-[var(--banner-border)] hover:bg-black/5 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </button>
+            </div>
+        </header>
+
+        <div id="view-admin" class="hidden admin-session relative z-10 flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--coaster-color)]">
+            <header id="admin-header" class="w-full py-3 px-6 bg-[var(--banner-bg)] text-[var(--banner-text)] flex justify-between items-center shadow-md relative z-[100]">
+
+                <div class="flex items-center gap-6">
+                    <div class="text-2xl font-black font-title cursor-pointer" onclick="showView('view-landing')">Coaster<span class="text-[var(--score-color)]">Quiz</span></div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="showView('view-admin-test-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap mr-1">Tester mes jeux</button>
+
+                    <div class="flex items-center gap-2 ml-1">
+                        <button type="button" onclick="showView('view-admin-creation-quiz')" class="bg-[#660000] hover:bg-[#800000] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Outil Création</button>
+
+                        <button type="button" onclick="showView('view-admin-moderation')" class="bg-[#ef4444] hover:bg-[#dc2626] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Modération</button>
+                        <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Messagerie</button>
+                        <button type="button" onclick="showView('view-admin-dashboard')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Tableau de bord</button>
+                        <button type="button" onclick="showView('view-admin-manage-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Gérer les jeux</button>
+                    </div>
+
+                    <div class="relative flex items-center">
+                        <input id="search-admin-1" type="text" placeholder="Chercher un jeu" autocomplete="off" class="bg-white/20 border border-black/10 rounded-lg py-1.5 pl-3 pr-10 text-xs outline-none w-48 font-medium" oninput="cqSearchAdmin(this.value)" onkeydown="cqSearchKeydown(event,'search-admin-1-dropdown',true)" onfocus="cqSearchAdmin(this.value)" onblur="cqSearchBlur('search-admin-1-dropdown')">
+                        <div class="absolute right-3 opacity-60">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                        </div>
+                        <div id="search-admin-1-dropdown" class="cq-search-dropdown hidden"></div>
+                    </div>
+
+                    <button type="button" onclick="openAdminSettings()" class="p-2 rounded-lg border border-[var(--banner-border)] hover:bg-black/5 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </button>
+                </div>
+            </header>
+            <main class="flex-1"></main>
+        </div>
+
+        <div id="view-admin-dashboard" class="hidden admin-session relative z-10 flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--coaster-color)]">
+            <header id="admin-dashboard-header" class="w-full py-3 px-6 bg-[var(--banner-bg)] text-[var(--banner-text)] flex justify-between items-center shadow-md relative z-[100]">
+
+                <div class="flex items-center gap-6">
+                    <div class="text-2xl font-black font-title cursor-pointer" onclick="showView('view-landing')">Coaster<span class="text-[var(--score-color)]">Quiz</span></div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="showView('view-admin-test-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap mr-1">Tester mes jeux</button>
+
+                    <div class="flex items-center gap-2 ml-1">
+                        <button type="button" onclick="showView('view-admin-creation-quiz')" class="bg-[#660000] hover:bg-[#800000] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Outil Création</button>
+
+                        <button type="button" onclick="showView('view-admin-moderation')" class="bg-[#ef4444] hover:bg-[#dc2626] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Modération</button>
+                        <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Messagerie</button>
+                        <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Tableau de bord</button>
+                        <button type="button" onclick="showView('view-admin-manage-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Gérer les jeux</button>
+                    </div>
+
+                    <div class="relative flex items-center">
+                        <input id="search-admin-2" type="text" placeholder="Chercher un jeu" autocomplete="off" class="bg-white/20 border border-black/10 rounded-lg py-1.5 pl-3 pr-10 text-xs outline-none w-48 font-medium" oninput="cqSearchAdmin(this.value)" onkeydown="cqSearchKeydown(event,'search-admin-2-dropdown',true)" onfocus="cqSearchAdmin(this.value)" onblur="cqSearchBlur('search-admin-2-dropdown')">
+                        <div class="absolute right-3 opacity-60">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                        </div>
+                        <div id="search-admin-2-dropdown" class="cq-search-dropdown hidden"></div>
+                    </div>
+
+                    <button type="button" onclick="openAdminSettings()" class="p-2 rounded-lg border border-[var(--banner-border)] hover:bg-black/5 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 px-6 py-6 overflow-y-auto">
+                <h1 class="text-2xl md:text-3xl font-black font-title text-[var(--coaster-color)] mb-6">Tableau de bord</h1>
+
+                <div id="cq-dash-kpis" class="cq-dash-kpi-grid mb-6"></div>
+
+                <div class="cq-dash-grid">
+                    <div class="cq-dash-card">
+                        <h2 class="cq-dash-card-title">Connexions par jour</h2>
+                        <div id="cq-dash-connections-list" class="flex flex-col gap-2"></div>
+                    </div>
+
+                    <div class="cq-dash-card">
+                        <h2 class="cq-dash-card-title">Comptes créés</h2>
+                        <div id="cq-dash-accounts-list" class="flex flex-col gap-1 cq-dash-scroll"></div>
+                    </div>
+
+                    <div class="cq-dash-card">
+                        <h2 class="cq-dash-card-title">Jeux par nombre de parties jouées</h2>
+                        <div id="cq-dash-games-list" class="flex flex-col gap-1 cq-dash-scroll"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="view-admin-creation-quiz" class="hidden admin-session relative z-10 flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--coaster-color)]">
+            <header id="admin-creation-quiz-header" class="w-full py-3 px-6 bg-[var(--banner-bg)] text-[var(--banner-text)] flex justify-between items-center shadow-md relative z-[100]">
+                <div class="flex items-center gap-6">
+                    <div class="text-2xl font-black font-title cursor-pointer" onclick="showView('view-landing')">Coaster<span class="text-[var(--score-color)]">Quiz</span></div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="showView('view-admin-test-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap mr-1">Tester mes jeux</button>
+
+                    <div class="flex items-center gap-2 ml-1">
+                        <button type="button" class="bg-[#660000] hover:bg-[#800000] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Outil Création</button>
+                        <button type="button" onclick="showView('view-admin-moderation')" class="bg-[#ef4444] hover:bg-[#dc2626] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Modération</button>
+                        <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Messagerie</button>
+                        <button type="button" onclick="showView('view-admin-dashboard')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Tableau de bord</button>
+                        <button type="button" onclick="showView('view-admin-manage-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Gérer les jeux</button>
+                    </div>
+
+                    <div class="relative flex items-center">
+                        <input id="search-admin-3" type="text" placeholder="Chercher un jeu" autocomplete="off" class="bg-white/20 border border-black/10 rounded-lg py-1.5 pl-3 pr-10 text-xs outline-none w-48 font-medium" oninput="cqSearchAdmin(this.value)" onkeydown="cqSearchKeydown(event,'search-admin-3-dropdown',true)" onfocus="cqSearchAdmin(this.value)" onblur="cqSearchBlur('search-admin-3-dropdown')">
+                        <div class="absolute right-3 opacity-60">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                        </div>
+                        <div id="search-admin-3-dropdown" class="cq-search-dropdown hidden"></div>
+                    </div>
+
+                    <button type="button" onclick="openAdminSettings()" class="p-2 rounded-lg border border-[var(--banner-border)] hover:bg-black/5 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 px-6">
+                <div class="cq-admin-creation-outer w-full h-[calc(100vh-64px)] bg-[var(--banner-bg)] text-[var(--banner-text)] p-8 rounded-3xl shadow-xl border border-black/5 overflow-hidden">
+                    <div class="relative flex items-center mb-6">
+                        <button type="button" onclick="cqStartNewGameCreation()"
+                            class="bg-[#660000] hover:bg-[#800000] text-white px-4 py-2.5 rounded-xl font-bold font-button uppercase transition text-xs whitespace-nowrap">
+                            Nouveau Jeu
+                        </button>
+                        <h1 class="cq-admin-creation-title text-4xl md:text-5xl font-black font-title text-[var(--banner-text)] absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
+                            Outil Création
+                        </h1>
+                    </div>
+
+                    <div class="cq-admin-creation-grid h-[calc(100%-4rem)] grid grid-cols-8 gap-6">
+                        <section class="cq-admin-existing-card col-span-2 bg-white/10 rounded-2xl border border-black/5 overflow-hidden flex flex-col">
+                            <div class="px-5 pt-5 pb-3 flex justify-between items-center">
+                                <h2 class="text-lg font-black font-title uppercase tracking-wider">Jeux existants</h2>
+                                <button type="button" onclick="cqOpenFilterModal()" class="text-[var(--banner-text)] opacity-70 hover:opacity-100 transition" title="Trier les jeux">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div id="cq-admin-existing-list" class="cq-admin-existing-list px-3 pb-3 overflow-y-auto custom-scroll">
+                                </div>
+                        </section>
+
+                        <section class="cq-admin-right-card col-span-6 bg-white/10 rounded-2xl border border-black/5 overflow-hidden flex">
+                            <div id="cq-right-newgame" class="w-full flex flex-col items-center justify-center gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl md:text-3xl font-black font-title uppercase tracking-wider text-[var(--banner-text)] opacity-90">
+                                        Nouveau Jeu
+                                    </div>
+                                </div>
+                                <button id="cq-right-newgame-plus"
+                                    type="button"
+                                    onclick="cqStartNewGameCreation()"
+                                    class="w-12 h-12 rounded-2xl bg-[#660000] hover:bg-[#800000] text-white flex items-center justify-center transition">
+                                    <span class="text-3xl leading-none font-button font-black">+</span>
+                                </button>
+                            </div>
+
+                            <div id="cq-right-coming" class="w-full hidden p-6 flex-col items-center justify-center" style="display:none;">
+                                <div class="text-2xl md:text-3xl font-black font-title uppercase tracking-wider text-[var(--banner-text)] opacity-80">
+                                    - Outil Création -
+                                </div>
+                            </div>
+
+                            <div id="cq-right-modify" class="w-full hidden p-6 flex-col" style="display:none;">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <div class="text-2xl md:text-3xl font-black font-title uppercase tracking-wider text-[var(--banner-text)] opacity-90">
+                                            Modification
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <button id="cq-modify-return-btn" type="button" onclick="cqExitModifyToComing()"
+                                            class="bg-white/10 border border-black/10 text-[var(--banner-text)] px-4 py-2 rounded-xl font-bold font-button uppercase text-xs hover:bg-white/15 transition">
+                                            Retour
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="mt-8">
+                                    <div class="font-button text-xs uppercase font-bold opacity-60 mb-2">Titre du quiz</div>
+
+                                    <div class="flex items-center gap-3 relative">
+                                        <input id="cq-modify-title-input"
+                                            type="text"
+                                            class="w-full bg-white/10 border border-black/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[rgba(102,0,0,0.6)] transition font-button font-medium"
+                                            value=""
+                                            autocomplete="off" />
+                                        <button type="button" onclick="cqRenameFromModify()" class="bg-[#660000] hover:bg-[#800000] text-white px-4 py-3 rounded-xl font-bold font-button uppercase text-xs transition whitespace-nowrap">Renommer</button>
+                                    </div>
+                                    
+                                    <p id="cq-modify-rename-error" class="text-red-500 text-xs mt-2 hidden font-bold font-button"></p>
+                                    <p id="cq-modify-online-rename-blocked" class="text-red-500 text-xs mt-2 hidden font-bold font-button">
+                                        Impossible de renommer le quiz lorsqu'il est en ligne
+                                    </p>
+
+                                    <div class="mt-6">
+                                        <div class="font-button text-xs uppercase font-bold opacity-60 mb-2">Difficulté</div>
+                                        <div class="flex gap-2 items-center" id="cq-modify-difficulty-stars">
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="1" onclick="cqSetModifyDifficulty(1)">★</button>
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="2" onclick="cqSetModifyDifficulty(2)">★</button>
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="3" onclick="cqSetModifyDifficulty(3)">★</button>
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="4" onclick="cqSetModifyDifficulty(4)">★</button>
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="5" onclick="cqSetModifyDifficulty(5)">★</button>
+                                        </div>
+                                        <button type="button" onclick="cqSaveModifyMeta()" class="mt-2 bg-[#660000] hover:bg-[#800000] text-white px-4 py-2 rounded-xl font-bold font-button uppercase text-xs transition">Enregistrer la difficulté</button>
+                                        <p id="cq-modify-meta-saved" class="text-green-500 text-xs mt-1 hidden font-bold font-button">Enregistré ✓</p>
+                                    </div>
+
+                                    <div class="mt-6">
+                                        <div class="font-button text-xs uppercase font-bold opacity-60 mb-2">Description</div>
+                                        <textarea id="cq-modify-description-input"
+                                            class="w-full bg-white/10 border border-black/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[rgba(102,0,0,0.6)] transition font-button font-medium resize-none"
+                                            rows="3"
+                                            placeholder="Description courte du quiz..."></textarea>
+                                        <button type="button" onclick="cqSaveModifyMeta()" class="mt-2 bg-[#660000] hover:bg-[#800000] text-white px-4 py-2 rounded-xl font-bold font-button uppercase text-xs transition">Enregistrer la description</button>
+                                    </div>
+
+                                    <div class="mt-8 flex flex-col items-end">
+                                        <button id="cq-modify-mode-btn" type="button" onclick="cqOpenEditorFromModify()"
+                                            class="bg-[#660000] hover:bg-[#800000] text-white px-6 py-3 rounded-xl font-bold font-button uppercase transition text-xs">
+                                            Modifier
+                                        </button>
+                                        <p id="cq-modify-online-edit-blocked" class="text-red-500 text-xs mt-2 hidden font-bold font-button">Ce quiz est en ligne, impossible de le modifier pour le moment</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="cq-right-characteristics" class="w-full hidden p-6 flex-col" style="display:none;">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <div class="text-2xl md:text-3xl font-black font-title uppercase tracking-wider text-[var(--banner-text)] opacity-90">
+                                            Caractéristiques
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6">
+                                    <div class="font-button text-xs uppercase font-bold opacity-60 mb-2">Choisir un mode de jeu</div>
+
+                                    <div class="relative w-full">
+                                        <button id="cq-mode-dropdown-trigger" type="button" onclick="cqToggleModeDropdown()"
+                                            class="w-full bg-white/10 border border-black/10 rounded-xl px-4 py-3 flex items-center justify-between hover:bg-white/15 transition">
+                                            <span id="cq-mode-dropdown-label" class="font-button text-xs uppercase font-bold opacity-90">
+                                                Mode de jeu
+                                            </span>
+                                            <svg id="cq-mode-dropdown-chevron" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 opacity-70 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="m6 9  6 6 6-6"></path>
+                                            </svg>
+                                        </button>
+
+                                        <div id="cq-mode-dropdown-menu"
+                                            class="cq-admin-mode-menu dropdown-menu bg-[var(--banner-bg)] border border-black/5 rounded-xl mt-2 overflow-hidden">
+                                            <button type="button" onclick="cqSelectMode('QCM')"
+                                                class="block w-full text-left px-4 py-3 text-[10px] font-bold font-button uppercase hover:bg-black/5 transition">
+                                                QCM
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-6">
+                                        <div class="font-button text-xs uppercase font-bold opacity-60 mb-2">Titre du quiz</div>
+
+                                        <div class="relative">
+                                            <input id="cq-game-title-input"
+                                                type="text"
+                                                class="w-full bg-white/10 border border-black/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[rgba(102,0,0,0.6)] transition font-button font-medium"
+                                                value=""
+                                                autocomplete="off"
+                                                oninput="cqUpdateTitlePlaceholder()" />
+
+                                            <div id="cq-game-title-placeholder"
+                                                class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm opacity-60 font-button font-medium">
+                                                Titre
+                                            </div>
+                                        </div>
+                                        <div id="cq-game-title-error" class="text-red-500 text-xs mt-1 hidden font-button font-medium">
+                                            Ce titre de jeu existe déjà.
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-6">
+                                        <div class="font-button text-xs uppercase font-bold opacity-60 mb-2">Difficulté</div>
+                                        <div class="flex gap-2 items-center" id="cq-difficulty-stars">
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="1" onclick="cqSetDifficulty(1)">★</button>
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="2" onclick="cqSetDifficulty(2)">★</button>
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="3" onclick="cqSetDifficulty(3)">★</button>
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="4" onclick="cqSetDifficulty(4)">★</button>
+                                            <button type="button" class="cq-star-btn text-2xl" data-val="5" onclick="cqSetDifficulty(5)">★</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-6">
+                                        <div class="font-button text-xs uppercase font-bold opacity-60 mb-2">Description</div>
+                                        <textarea id="cq-game-description-input"
+                                            class="w-full bg-white/10 border border-black/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[rgba(102,0,0,0.6)] transition font-button font-medium resize-none"
+                                            rows="3"
+                                            placeholder="Description courte du quiz..."></textarea>
+                                    </div>
+
+                                    <div class="mt-6 flex justify-end">
+                                        <button id="cq-valider-btn" type="button" onclick="cqValidateNewGame()"
+                                            class="bg-[#660000] text-white px-6 py-3 rounded-xl font-bold font-button uppercase transition text-xs opacity-50 cursor-not-allowed" disabled>
+                                            Valider
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="cq-right-editor" class="w-full hidden p-6 flex-col gap-5 cqed-root" style="display:none;">
+                                <div class="flex items-center justify-between cqed-topbar">
+                                    <div>
+                                        <div class="text-2xl md:text-3xl font-black font-title uppercase tracking-wider opacity-90 text-[var(--banner-text)]">
+                                            Éditeur
+                                        </div>
+                                        <div id="cq-editor-lock-badge" class="hidden px-3 py-1.5 rounded-xl bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30 font-bold font-button uppercase text-[10px] mt-2">
+                                            Consultation bloquée
+                                        </div>
+                                    </div>
+                                    <button id="cq-return-to-coming-btn" type="button" onclick="cqExitEditorToComing()" class="cqed-btn-secondary">
+                                        Retour
+                                    </button>
+                                </div>
+
+                                <div class="cqed-body">
+                                    <div class="cqed-slide-card">
+                                        <div class="cqed-slide-card-head">
+                                            <label class="cqed-label">Question</label>
+                                            <button id="cq-delete-current-diapo-btn" type="button" onclick="cqAskDeleteCurrentDiapo()" class="cqed-delete-diapo-btn hidden" title="Supprimer cette diapo">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                                            </button>
+                                        </div>
+
+                                        <input id="cq-question-text-input" type="text" class="cqed-question-input" placeholder="Quelle est la question ?" value="" autocomplete="off" />
+
+                                        <div class="cqed-answers-head">
+                                            <label class="cqed-label">Réponses</label>
+                                            <button id="cq-add-answer-btn" type="button" onclick="cqAddAnswer()" class="cqed-add-btn">
+                                                + Nouvelle réponse
+                                            </button>
+                                        </div>
+                                        <div id="cq-answers-list" class="cqed-answers-grid"></div>
+                                    </div>
+
+                                    <div class="cqed-slides-card">
+                                        <div class="cqed-slides-head">
+                                            <label class="cqed-label">Diapos</label>
+                                            <button id="cq-add-diapo-btn" type="button" onclick="cqAddDiapo()" class="cqed-add-btn">
+                                                + Nouvelle diapo
+                                            </button>
+                                        </div>
+
+                                        <div id="cq-slides-strip" class="cqed-slides-strip"></div>
+
+                                        <div id="cq-slides-empty-hint" class="cqed-hint hidden" style="margin-top:0.5rem;">
+                                            Ajoute une diapo pour commencer.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="cqed-footer">
+                                    <div id="cq-validation-hint" class="cqed-hint hidden"></div>
+                                    <button id="cq-create-quiz-btn" type="button" onclick="cqSaveDraft()" class="cqed-create-btn" disabled>
+                                        Créer le quiz
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="view-admin-manage-games" class="hidden admin-session relative z-10 flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--coaster-color)]">
+            <header id="admin-manage-games-header" class="w-full py-3 px-6 bg-[var(--banner-bg)] text-[var(--banner-text)] flex justify-between items-center shadow-md relative z-[100]">
+                <div class="flex items-center gap-6">
+                    <div class="text-2xl font-black font-title cursor-pointer" onclick="showView('view-landing')">Coaster<span class="text-[var(--score-color)]">Quiz</span></div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="showView('view-admin-test-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap mr-1">Tester mes jeux</button>
+
+                    <div class="flex items-center gap-2 ml-1">
+                        <button type="button" onclick="showView('view-admin-creation-quiz')" class="bg-[#660000] hover:bg-[#800000] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Outil Création</button>
+                        <button type="button" onclick="showView('view-admin-moderation')" class="bg-[#ef4444] hover:bg-[#dc2626] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Modération</button>
+                        <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Messagerie</button>
+                        <button type="button" onclick="showView('view-admin-dashboard')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Tableau de bord</button>
+                        <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Gérer les jeux</button>
+                    </div>
+
+                    <div class="relative flex items-center">
+                        <input id="search-admin-4" type="text" placeholder="Chercher un jeu" autocomplete="off" class="bg-white/20 border border-black/10 rounded-lg py-1.5 pl-3 pr-10 text-xs outline-none w-48 font-medium" oninput="cqSearchAdmin(this.value)" onkeydown="cqSearchKeydown(event,'search-admin-4-dropdown',true)" onfocus="cqSearchAdmin(this.value)" onblur="cqSearchBlur('search-admin-4-dropdown')">
+                        <div class="absolute right-3 opacity-60">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                        </div>
+                        <div id="search-admin-4-dropdown" class="cq-search-dropdown hidden"></div>
+                    </div>
+
+                    <button type="button" onclick="openAdminSettings()" class="p-2 rounded-lg border border-[var(--banner-border)] hover:bg-black/5 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 px-6">
+                <div class="cq-admin-creation-outer w-full h-[calc(100vh-64px)] bg-[var(--banner-bg)] text-[var(--banner-text)] p-8 rounded-3xl shadow-xl border border-black/5 overflow-hidden flex flex-col">
+                    <div class="relative flex items-center mb-6 shrink-0">
+                        <button type="button" onclick="cqOpenCategoriesModal()" class="absolute left-0 bg-[#660000] hover:bg-[#800000] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Gérer les catégories</button>
+                        <h1 class="cq-admin-creation-title text-4xl md:text-5xl font-black font-title text-[var(--banner-text)] mx-auto whitespace-nowrap">
+                            Gérer les jeux
+                        </h1>
+                    </div>
+                    
+                    <div class="flex-1 bg-white/10 rounded-2xl border border-black/5 overflow-hidden flex flex-col">
+                        <div class="px-5 pt-5 pb-3 flex justify-between items-center shrink-0">
+                            <h2 class="text-lg font-black font-title uppercase tracking-wider">Liste des jeux</h2>
+                        </div>
+                        <div id="cq-admin-manage-list" class="px-3 pb-3 overflow-y-auto custom-scroll flex-1">
+                            </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="view-admin-test-games" class="hidden admin-session relative z-10 flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--coaster-color)]">
+            <header id="admin-test-games-header" class="w-full py-3 px-6 bg-[var(--banner-bg)] text-[var(--banner-text)] flex justify-between items-center shadow-md relative z-[100]">
+                <div class="flex items-center gap-6">
+                    <div class="text-2xl font-black font-title cursor-pointer" onclick="showView('view-landing')">Coaster<span class="text-[var(--score-color)]">Quiz</span></div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap mr-1">Tester mes jeux</button>
+
+                    <div class="flex items-center gap-2 ml-1">
+                        <button type="button" onclick="showView('view-admin-creation-quiz')" class="bg-[#660000] hover:bg-[#800000] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Outil Création</button>
+                        <button type="button" onclick="showView('view-admin-moderation')" class="bg-[#ef4444] hover:bg-[#dc2626] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Modération</button>
+                        <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Messagerie</button>
+                        <button type="button" onclick="showView('view-admin-dashboard')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Tableau de bord</button>
+                        <button type="button" onclick="showView('view-admin-manage-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Gérer les jeux</button>
+                    </div>
+
+                    <div class="relative flex items-center">
+                        <input id="search-admin-5" type="text" placeholder="Chercher un jeu" autocomplete="off" class="bg-white/20 border border-black/10 rounded-lg py-1.5 pl-3 pr-10 text-xs outline-none w-48 font-medium" oninput="cqSearchAdmin(this.value)" onkeydown="cqSearchKeydown(event,'search-admin-5-dropdown',true)" onfocus="cqSearchAdmin(this.value)" onblur="cqSearchBlur('search-admin-5-dropdown')">
+                        <div class="absolute right-3 opacity-60">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                        </div>
+                        <div id="search-admin-5-dropdown" class="cq-search-dropdown hidden"></div>
+                    </div>
+
+                    <button type="button" onclick="openAdminSettings()" class="p-2 rounded-lg border border-[var(--banner-border)] hover:bg-black/5 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 px-6">
+                <div class="cq-admin-creation-outer w-full h-[calc(100vh-64px)] bg-[var(--banner-bg)] text-[var(--banner-text)] p-8 rounded-3xl shadow-xl border border-black/5 overflow-hidden flex flex-col">
+                    <div class="relative flex items-center mb-6 shrink-0">
+                        <h1 class="cq-admin-creation-title text-4xl md:text-5xl font-black font-title text-[var(--banner-text)] mx-auto whitespace-nowrap">
+                            Tester mes jeux
+                        </h1>
+                    </div>
+
+                    <div class="flex-1 bg-white/10 rounded-2xl border border-black/5 overflow-hidden flex flex-col">
+                        <div class="px-5 pt-5 pb-3 flex justify-between items-center shrink-0">
+                            <h2 class="text-lg font-black font-title uppercase tracking-wider">Liste des jeux</h2>
+                            <p class="text-[10px] opacity-60 font-button max-w-sm text-right leading-relaxed">Zone admin de bêta-test des jeux</p>
+                        </div>
+                        <div id="cq-admin-test-list" class="px-3 pb-3 overflow-y-auto custom-scroll flex-1">
+                            </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+
+        <div id="view-user-home" class="hidden relative z-10">
+            <main class="max-w-7xl w-full mx-auto px-6 py-6 overflow-hidden">
+                <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+                    <h1 class="text-2xl md:text-3xl font-black font-title text-[var(--coaster-color)]">Bonjour <span id="user-home-pseudo">-</span></h1>
+                    <button type="button" onclick="showView('view-my-scores')" class="bg-[#660000] text-white px-5 py-2.5 rounded-xl font-bold font-button text-xs uppercase tracking-wider hover:bg-[#800000] transition">Mes Scores</button>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                    <div class="lg:col-span-2 bg-[var(--banner-bg)] text-[var(--banner-text)] p-6 rounded-3xl shadow-xl border border-black/5 flex flex-col">
+                        <h2 class="text-xl font-black font-title mb-4 uppercase tracking-wider">A la une</h2>
+                        <div id="user-featured-quizzes-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-6">
+                        <div class="flex-1 bg-[var(--banner-bg)] text-[var(--banner-text)] p-6 rounded-3xl shadow-xl border border-black/5 flex flex-col">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-xl font-black font-title uppercase tracking-wider">Favoris</h2>
+                                <button type="button" onclick="cqOpenFavoritesModal()" class="cq-favori-add-btn" title="Ajouter un favori">+</button>
+                            </div>
+                            <div id="user-favorites-grid" class="grid grid-cols-1 gap-2 flex-1">
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-[var(--banner-bg)] text-[var(--banner-text)] p-6 rounded-3xl shadow-xl border border-black/5 flex flex-col">
+                            <h2 class="text-xl font-black font-title mb-4 uppercase tracking-wider">Meilleurs joueurs</h2>
+                            <div class="bg-[var(--pastel-yellow)] p-4 rounded-2xl border border-black/5 leaderboard-list">
+                                <div class="leaderboard-row">
+                                    <span class="rank-badge rank-gold">1</span>
+                                    <span class="leaderboard-chip leaderboard-chip-score">30000</span>
+                                    <span class="leaderboard-chip leaderboard-chip-name">Joueur 1</span>
+                                </div>
+                                <div class="leaderboard-divider"></div>
+                                <div class="leaderboard-row">
+                                    <span class="rank-badge rank-silver">2</span>
+                                    <span class="leaderboard-chip leaderboard-chip-score">20000</span>
+                                    <span class="leaderboard-chip leaderboard-chip-name">Joueur 2</span>
+                                </div>
+                                <div class="leaderboard-divider"></div>
+                                <div class="leaderboard-row">
+                                    <span class="rank-badge rank-bronze">3</span>
+                                    <span class="leaderboard-chip leaderboard-chip-score">10000</span>
+                                    <span class="leaderboard-chip leaderboard-chip-name">Joueur 3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="view-my-scores" class="hidden relative z-10 flex flex-col min-h-[calc(100vh-3.5rem)]">
+            <main class="flex-1 flex items-center justify-center px-6">
+                <p class="text-2xl md:text-3xl font-title font-black text-[var(--coaster-color)] opacity-60 text-center">Page en cours de construction</p>
+            </main>
+        </div>
+
+        <div id="view-user-profile" class="hidden relative z-10 flex flex-col min-h-[calc(100vh-3.5rem)] px-6 py-8">
+            <h1 class="text-4xl md:text-5xl font-black font-title text-[var(--coaster-color)] text-center mb-8">Mon Profil</h1>
+            
+            <div class="flex-1 flex items-center justify-center">
+                <div class="profile-main-card w-full max-w-4xl">
+                    <div class="profile-scores-card">Scores à venir</div>
+
+                    <div class="profile-info-section">
+                        <div class="profile-header">
+                            <div class="profile-avatar-section">
+                                <div class="avatar-circle" id="profile-avatar" style="width: 5rem; height: 5rem;"></div>
+                            </div>
+                            <div class="profile-details" style="gap: 0.5rem;">
+                                <div class="profile-info-card">
+                                    <label class="profile-info-card-label">Pseudo</label>
+                                    <div class="profile-info-card-value" id="profile-pseudo">-</div>
+                                </div>
+                                <div class="profile-info-card">
+                                    <label class="profile-info-card-label">Mot de passe</label>
+                                    <div class="password-input-wrapper" style="flex: 1;">
+                                        <input type="password" id="profile-password" class="profile-password-input" readonly style="border: none; background: transparent; padding: 0; padding-right: 2rem;">
+                                        <button type="button" onclick="toggleProfilePasswordVisibility()" class="password-toggle-btn" style="right: 0;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-actions">
+                            <button type="button" onclick="openChangePseudo()" class="profile-btn-secondary">Changer le pseudo</button>
+                            <button type="button" onclick="openChangePassword()" class="profile-btn-secondary">Changer de mot de passe</button>
+                            <button type="button" onclick="openDeleteAccountConfirm()" class="profile-btn-danger">Supprimer son compte</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-guest-home" class="hidden relative z-10">
+            <main class="max-w-7xl w-full mx-auto px-6 py-6 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                    <div class="lg:col-span-2 bg-[var(--banner-bg)] text-[var(--banner-text)] p-6 rounded-3xl shadow-xl border border-black/5 flex flex-col">
+                        <h2 class="text-xl font-black font-title mb-4 uppercase tracking-wider">A la une</h2>
+                        <div id="featured-quizzes-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-6">
+                        <div class="flex-1 bg-[var(--banner-bg)] text-[var(--banner-text)] p-6 rounded-3xl shadow-xl border border-black/5 flex flex-col">
+                            <h2 class="text-xl font-black font-title mb-4 uppercase tracking-wider">Favoris</h2>
+                            <div class="flex flex-col gap-2 flex-1 items-center justify-center">
+                                <button type="button" onclick="closeSettings(); openLogin('guest')" class="favori-hint transition w-full text-center">Se connecter pour ajouter un favori</button>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-[var(--banner-bg)] text-[var(--banner-text)] p-6 rounded-3xl shadow-xl border border-black/5 flex flex-col">
+                            <h2 class="text-xl font-black font-title mb-4 uppercase tracking-wider">Meilleurs joueurs</h2>
+                            <div class="bg-[var(--pastel-yellow)] p-4 rounded-2xl border border-black/5 leaderboard-list">
+                                <div class="leaderboard-row">
+                                    <span class="rank-badge rank-gold">1</span>
+                                    <span class="leaderboard-chip leaderboard-chip-score">30000</span>
+                                    <span class="leaderboard-chip leaderboard-chip-name">Joueur 1</span>
+                                </div>
+                                <div class="leaderboard-divider"></div>
+                                <div class="leaderboard-row">
+                                    <span class="rank-badge rank-silver">2</span>
+                                    <span class="leaderboard-chip leaderboard-chip-score">20000</span>
+                                    <span class="leaderboard-chip leaderboard-chip-name">Joueur 2</span>
+                                </div>
+                                <div class="leaderboard-divider"></div>
+                                <div class="leaderboard-row">
+                                    <span class="rank-badge rank-bronze">3</span>
+                                    <span class="leaderboard-chip leaderboard-chip-score">10000</span>
+                                    <span class="leaderboard-chip leaderboard-chip-name">Joueur 3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="view-game" class="hidden relative z-10">
+            <main class="max-w-5xl w-full mx-auto px-6 py-8">
+                <div id="cq-admin-test-banner" class="hidden mb-4 flex items-center justify-between bg-[#660000] text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase font-button">
+                    <span>Mode test admin</span>
+                    <button type="button" onclick="cqExitAdminTest()" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition">Quitter le test</button>
+                </div>
+                <div class="flex items-start justify-between mb-6">
+                    <h1 id="game-quiz-title" class="text-3xl md:text-4xl font-black font-title text-[var(--coaster-color)]">Quiz</h1>
+                    <a href="#" onclick="return false;" class="flex items-center gap-1.5 text-black bg-white/90 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-white transition" title="Signaler un bug sur ce jeu">
+                        <span>🚩</span>
+                        <span>Signaler un bug sur ce jeu</span>
+                    </a>
+                </div>
+                <div id="game-description" class="text-sm opacity-70 mb-4 text-[var(--coaster-color)] hidden"></div>
+                <!-- Bouton favori (connecté uniquement, géré par JS) -->
+                <div id="game-favorite-btn-wrap" class="hidden mt-4 flex justify-center">
+                    <button type="button" id="game-favorite-btn" onclick="cqToggleFavoriteFromGamePage()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-black font-button font-bold text-sm bg-[var(--banner-bg)] text-[var(--banner-text)] transition hover:opacity-80">
+                        <svg id="game-favorite-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="black" stroke-width="1.5" class="w-5 h-5" fill="gray"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
+                        <span id="game-favorite-label">Ajouter aux favoris</span>
+                    </button>
+                </div>
+                <div class="game-card shadow-xl mt-4" id="game-card-main" style="position:relative;">
+                    <div id="game-prestart" class="game-prestart">
+                        <div class="game-prestart-header">
+                            <div class="game-prestart-plays" id="game-prestart-plays"></div>
+                            <div class="game-prestart-difficulty" id="game-prestart-difficulty"></div>
+                        </div>
+                        <div id="game-prestart-card-title" class="game-prestart-card-title font-title"></div>
+                        <p class="text-sm opacity-60 font-button uppercase tracking-widest">Prêt ?</p>
+                        <button type="button" onclick="beginQuiz()" class="game-prestart-btn">Commencer</button>
+                        <button type="button" onclick="beginQuizNoTimer()" class="game-notimer-btn">Jouer sans chrono</button>
+                    </div>
+                    <div id="game-closed-state" class="hidden game-closed-state">
+                        <div class="game-closed-icon">🚧</div>
+                        <p class="game-closed-title">Quiz en chantier</p>
+                        <p class="game-closed-text">Ce quiz est actuellement fermé temporairement pour une durée indéterminée. Reviens un peu plus tard pour y jouer !</p>
+                    </div>
+                    <div id="game-play-area" class="hidden flex-col flex-1" style="display:none;flex-direction:column;">
+                    <div class="game-banner">
+                        <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <span id="game-question-num" class="font-button text-sm font-bold shrink-0 opacity-80">1/1</span>
+                            <span id="game-question-text" class="font-bold text-sm md:text-base truncate">...</span>
+                        </div>
+                        <div id="game-score" class="font-title font-black text-xl md:text-2xl text-[#ff6b6b] shrink-0">0</div>
+                    </div>
+                    <div class="game-body">
+                        <div class="game-answers-area">
+                            <div id="game-answers-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl"></div>
+                        </div>
+                        <div class="game-timer-track">
+                            <div id="game-timer-fill" class="game-timer-fill"></div>
+                        </div>
+                    </div>
+                    </div>
+                    <!-- Bouton plein écran -->
+                    <button type="button" id="btn-fullscreen" onclick="toggleGameFullscreen()" title="Plein écran" class="btn-fullscreen-game">
+                        <svg id="icon-fullscreen-enter" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="18" height="18">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                        </svg>
+                        <svg id="icon-fullscreen-exit" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="18" height="18" style="display:none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25" />
+                        </svg>
+                    </button>
+                </div>
+            </main>
+        </div>
+
+        <div id="view-results" class="hidden relative z-10">
+            <main class="max-w-5xl w-full mx-auto px-6 py-8 text-center">
+                <div class="font-title text-5xl md:text-6xl font-black mb-6 text-[var(--coaster-color)]">BRAVO !</div>
+                <!-- Carte visuelle du jeu (clone de game-card) -->
+                <div id="results-game-card-wrap" class="game-card shadow-xl mb-6 text-left" style="position:relative;">
+                    <div class="game-prestart" style="min-height:200px;">
+                        <div class="game-prestart-header">
+                            <div class="game-prestart-plays" id="results-game-plays"></div>
+                            <div class="game-prestart-difficulty" id="results-game-difficulty"></div>
+                        </div>
+                        <div id="results-game-card-title" class="game-prestart-card-title font-title"></div>
+                        <!-- Score mis en évidence -->
+                        <div class="flex flex-col items-center gap-1 mt-2">
+                            <div class="text-xs uppercase font-bold tracking-widest opacity-60 font-button">Score Total</div>
+                            <div class="text-5xl font-black font-title text-[#660000]" id="results-final-score">0</div>
+                        </div>
+                    </div>
+                    <!-- Boutons Rejouer / Retour -->
+                    <div id="results-fs-actions" class="flex flex-col items-center gap-3 pb-6 pt-2">
+                        <button onclick="replayCurrentQuiz()" class="bg-[#660000] text-white px-10 py-4 rounded-2xl font-bold font-button text-lg hover:bg-[#800000] transition">REJOUER</button>
+                        <button onclick="goBackFromResults()" class="bg-[var(--banner-bg)] text-[var(--banner-text)] border border-black/20 px-6 py-2.5 rounded-xl font-bold font-button text-sm hover:opacity-80 transition">Retour</button>
+                    </div>
+                    <!-- Bouton plein écran résultats -->
+                    <button type="button" id="btn-fullscreen-results" onclick="toggleResultsFullscreen()" title="Plein écran" class="btn-fullscreen-game">
+                        <svg id="icon-fs-results-enter" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="18" height="18">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                        </svg>
+                        <svg id="icon-fs-results-exit" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="18" height="18" style="display:none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Bouton favori (session connectée uniquement, géré par JS) -->
+                <div id="results-favorite-btn-wrap" class="hidden mb-6">
+                    <button type="button" id="results-favorite-btn" onclick="cqToggleFavoriteFromGamePage()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-black font-button font-bold text-sm bg-[var(--banner-bg)] text-[var(--banner-text)] transition hover:opacity-80">
+                        <svg id="results-favorite-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="black" stroke-width="1.5" class="w-5 h-5" fill="gray"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
+                        <span id="results-favorite-label">Ajouter aux favoris</span>
+                    </button>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- PAGE BANNI -->
+        <div id="view-banned" class="hidden relative z-10 min-h-screen flex items-center justify-center px-6">
+            <div class="max-w-md w-full bg-[var(--banner-bg)] text-[var(--banner-text)] rounded-3xl shadow-2xl p-10 text-center">
+                <div class="text-5xl mb-4">🚫</div>
+                <h1 class="text-2xl font-black font-title uppercase tracking-widest mb-2">Compte banni</h1>
+                <div id="banned-duration" class="text-sm font-bold font-button uppercase tracking-widest text-[#ef4444] mb-4"></div>
+                <div class="text-xs opacity-60 mb-2 font-button uppercase tracking-widest">Raison</div>
+                <p id="banned-reason" class="text-sm font-medium mb-8 opacity-80"></p>
+                <div class="flex flex-col gap-3">
+                    <button type="button" onclick="showView('view-landing')" class="bg-[#6B7280] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm hover:bg-[#4B5563] transition">Retour à l'accueil</button>
+                    <button type="button" onclick="openBanContest()" class="bg-[#660000] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm hover:bg-[#800000] transition">Contester</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-all-games" class="hidden relative z-10">
+            <main class="max-w-7xl w-full mx-auto px-6 py-6">
+                <div class="bg-[var(--banner-bg)] text-[var(--banner-text)] p-8 rounded-3xl shadow-xl border border-black/5 flex flex-col h-[75vh]">
+                    <h2 class="text-2xl font-black font-title mb-8 uppercase tracking-wider shrink-0">Tous les jeux</h2>
+
+                    <div id="cq-all-games-categories-list" class="flex flex-col gap-8 overflow-y-auto pr-4 custom-scroll flex-1">
+                    </div>
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- MODALE CONTESTATION BAN -->
+    <div id="modal-ban-contest" class="fixed inset-0 z-[300] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl">
+            <div class="flex justify-center items-center mb-6 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Contester</h2>
+                <button type="button" onclick="closeBanContest()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <textarea id="ban-contest-message" rows="5" placeholder="Décrivez votre contestation..." class="w-full bg-black/5 border border-black/10 rounded-xl px-4 py-3 text-sm outline-none resize-none mb-4 font-button"></textarea>
+            <button type="button" onclick="submitBanContest()" class="w-full bg-[#660000] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm hover:bg-[#800000] transition">Envoyer</button>
+        </div>
+    </div>
+
+    <!-- MODALE BAN (admin) -->
+    <div id="modal-ban" class="fixed inset-0 z-[300] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative modal-card w-full max-w-md p-8 rounded-3xl shadow-2xl admin-session">
+            <div class="flex justify-center items-center mb-6 relative">
+                <h2 class="text-xl font-black font-title uppercase tracking-widest">Bannir <span id="ban-modal-pseudo" class="text-[#ef4444]"></span></h2>
+                <button type="button" onclick="closeBanModal()" class="modal-close-btn absolute -right-2 -top-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div class="flex gap-4 mb-5">
+                <label class="flex items-center gap-2 cursor-pointer font-button text-sm font-bold">
+                    <input type="radio" name="ban-type" value="temporary" checked onchange="toggleBanDaysField()"> Temporaire
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer font-button text-sm font-bold">
+                    <input type="radio" name="ban-type" value="permanent" onchange="toggleBanDaysField()"> Définitif
+                </label>
+            </div>
+            <div id="ban-days-wrap" class="mb-4">
+                <label class="font-button text-xs uppercase font-bold opacity-60 mb-1 block">Durée (jours)</label>
+                <input type="number" id="ban-days-input" min="1" placeholder="Ex : 7" class="w-full bg-black/5 border border-black/10 rounded-xl px-4 py-2.5 text-sm outline-none font-button">
+            </div>
+            <div class="mb-5">
+                <label class="font-button text-xs uppercase font-bold opacity-60 mb-1 block">Raison <span class="text-[#ef4444]">*</span></label>
+                <textarea id="ban-reason-input" rows="3" placeholder="Motif du bannissement..." class="w-full bg-black/5 border border-black/10 rounded-xl px-4 py-3 text-sm outline-none resize-none font-button"></textarea>
+            </div>
+            <p id="ban-modal-error" class="text-[#ef4444] text-xs mb-3 font-button font-bold"></p>
+            <button type="button" onclick="submitBanForm()" class="w-full bg-[#ef4444] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm hover:bg-[#dc2626] transition">Valider</button>
+        </div>
+    </div>
+
+    <!-- MODALE CONFIRMATION BAN -->
+    <div id="modal-ban-confirm" class="fixed inset-0 z-[310] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative delete-confirm-card w-full max-w-sm p-8 rounded-3xl shadow-2xl text-center admin-session">
+            <h2 class="text-xl font-black font-title uppercase tracking-widest mb-4">Confirmer le bannissement</h2>
+            <p class="text-sm opacity-70 mb-6">Voulez-vous vraiment bannir <strong id="ban-confirm-pseudo"></strong> ?</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeBanConfirm()" class="delete-btn-back w-1/2">Non</button>
+                <button type="button" onclick="executeBan()" class="delete-btn-confirm w-1/2">Oui, bannir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE SUPPRESSION COMPTE ACTIF (impossible) -->
+    <div id="modal-delete-user-active" class="fixed inset-0 z-[310] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative modal-card w-full max-w-sm p-8 rounded-3xl shadow-2xl text-center admin-session">
+            <h2 class="text-xl font-black font-title uppercase tracking-widest mb-4">Impossible</h2>
+            <p class="text-sm opacity-70 mb-6">Un compte actif ne peut pas être supprimé. Bannissez d'abord le joueur.</p>
+            <button type="button" onclick="closeDeleteUserActive()" class="w-full bg-[#6B7280] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm hover:bg-[#4B5563] transition">Retour</button>
+        </div>
+    </div>
+
+    <!-- MODALE CONFIRMATION SUPPRESSION COMPTE -->
+    <div id="modal-delete-user-confirm" class="fixed inset-0 z-[310] flex items-center justify-center hidden p-4">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative delete-confirm-card w-full max-w-sm p-8 rounded-3xl shadow-2xl text-center admin-session">
+            <h2 class="text-xl font-black font-title uppercase tracking-widest mb-4">Supprimer le compte ?</h2>
+            <p class="text-sm opacity-70 mb-2">Joueur : <strong id="delete-user-confirm-pseudo"></strong></p>
+            <p class="text-xs opacity-50 mb-6">Cette action est irréversible. Toutes les données seront supprimées.</p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeDeleteUserConfirm()" class="delete-btn-back w-1/2">Non</button>
+                <button type="button" onclick="executeDeleteUser()" class="delete-btn-confirm w-1/2">Oui, supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VUE ADMIN MODÉRATION -->
+    <div id="view-admin-moderation" class="hidden admin-session relative z-10 flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--coaster-color)]">
+        <header class="w-full py-3 px-6 bg-[var(--banner-bg)] text-[var(--banner-text)] flex justify-between items-center shadow-md relative z-[100]">
+            <div class="flex items-center gap-6">
+                <div class="text-2xl font-black font-title cursor-pointer" onclick="showView('view-landing')">Coaster<span class="text-[var(--score-color)]">Quiz</span></div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="showView('view-admin-test-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap mr-1">Tester mes jeux</button>
+                <div class="flex items-center gap-2 ml-1">
+                    <button type="button" onclick="showView('view-admin-creation-quiz')" class="bg-[#660000] hover:bg-[#800000] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Outil Création</button>
+                    <button type="button" class="bg-[#ef4444] hover:bg-[#dc2626] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Modération</button>
+                    <button type="button" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Messagerie</button>
+                    <button type="button" onclick="showView('view-admin-dashboard')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Tableau de bord</button>
+                    <button type="button" onclick="showView('view-admin-manage-games')" class="bg-[#6B7280] hover:bg-[#4B5563] text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase font-button transition whitespace-nowrap">Gérer les jeux</button>
+                </div>
+                <button type="button" onclick="openAdminSettings()" class="p-2 rounded-lg border border-[var(--banner-border)] hover:bg-black/5 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </button>
+            </div>
+        </header>
+        <main class="flex-1 px-6 py-6 overflow-y-auto">
+            <h1 class="text-2xl md:text-3xl font-black font-title text-[var(--coaster-color)] mb-6">Modération</h1>
+            <div class="bg-[var(--banner-bg)] text-[var(--banner-text)] p-6 rounded-3xl shadow-xl border border-black/5">
+                <div class="relative mb-6">
+                    <input type="text" id="mod-search-input" placeholder="Rechercher un compte..." autocomplete="off"
+                        oninput="cqRenderModeration(this.value)"
+                        class="w-full bg-black/5 border border-black/10 rounded-xl py-3 pl-4 pr-12 text-sm outline-none font-medium focus:border-[rgba(102,0,0,0.4)] transition">
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-40">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                    </div>
+                </div>
+                <div id="cq-moderation-list" class="flex flex-col gap-3"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
