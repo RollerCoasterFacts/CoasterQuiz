@@ -1,0 +1,10 @@
+- Implémenter divers types de quiz
+(Question Map, Quiz Personnalisé)
+
+- Trouver et implémenter effets sonores
+
+
+
+---------------------------------------------------
+A la fin :
+- Améliorer les rendus, les animations, le visuel

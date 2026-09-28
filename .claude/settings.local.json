@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c//**)",
+      "Read(//c/Users/samue/**)",
+      "Read(//c/Users/samue/.claude/**)",
+      "Bash(grep -noE \"^[[:space:]]{1,12}function[[:space:]]+[a-zA-Z_$][a-zA-Z0-9_$]*\" script.js)",
+      "Bash(sed -E 's/^\\([0-9]+\\):[[:space:]]*function[[:space:]]+/\\\\1 /')",
+      "Read(//tmp/**)",
+      "Bash(sed -i '/Override pour Quiz Personnalisé/,/};$/d' script.js)",
+      "Bash(sed -i '/Override de cqValidateDraft pour Quiz Personnalisé/,/^}$/d' script.js)",
+      "Bash(sed -i '/if \\(mode === .Quiz Personnalisé.\\)/,/}/d' script.js)"
+    ]
+  }
+}

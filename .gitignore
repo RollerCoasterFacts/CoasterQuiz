@@ -1,0 +1,22 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Node (si ajouté plus tard)
+node_modules/
+package-lock.json
+
+# Build
+dist/
+build/
+
+# Dossier de backup
+Backup*/
