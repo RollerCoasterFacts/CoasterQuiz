@@ -1,3 +1,103 @@
+// AudioManager stub - volume for question audio only
+const AudioManager = (() => {
+    return {
+        getVolume: () => 1.0,
+        setVolume: () => {},
+        init: () => {}
+    };
+})();
+
+// ============================================
+// FIRESTORE SYNC LAYER
+// ============================================
+const FirestoreSync = (() => {
+    let _quizzesCache = null;
+    let _isSyncing = false;
+
+    // Clé pour stocker données locales si Firestore down
+    const LOCAL_STORAGE_KEY = 'cq_quizzes_backup';
+
+    async function loadQuizzesFromFirestore() {
+        if (!window.firebaseDB) {
+            console.warn("[Firestore] DB not ready, using localStorage");
+            return _loadFromLocalStorage();
+        }
+
+        try {
+            const userId = window.firebaseUser?.uid;
+            if (!userId) return [];
+
+            const snapshot = await window.firebaseDB.collection('users').doc(userId).collection('quizzes').get();
+            const quizzes = [];
+            snapshot.forEach(doc => {
+                quizzes.push({ id: doc.id, ...doc.data() });
+            });
+
+            _quizzesCache = quizzes;
+            _saveToLocalStorage(quizzes); // Backup local
+            return quizzes;
+        } catch (error) {
+            console.warn("[Firestore] Erreur chargement, fallback localStorage:", error);
+            return _loadFromLocalStorage();
+        }
+    }
+
+    async function saveQuizzesToFirestore(quizzes) {
+        _saveToLocalStorage(quizzes); // Toujours sauvegarder local d'abord
+
+        if (!window.firebaseDB || _isSyncing) return;
+
+        try {
+            _isSyncing = true;
+            const userId = window.firebaseUser?.uid;
+            if (!userId) return;
+
+            const userRef = window.firebaseDB.collection('users').doc(userId);
+
+            // Supprimer anciens quizzes
+            const snapshot = await userRef.collection('quizzes').get();
+            for (const doc of snapshot.docs) {
+                await doc.ref.delete();
+            }
+
+            // Sauvegarder nouveaux
+            for (const quiz of quizzes) {
+                await userRef.collection('quizzes').add(quiz);
+            }
+
+            console.log("[Firestore] Quizzes synchronisés avec succès");
+            _quizzesCache = quizzes;
+        } catch (error) {
+            console.warn("[Firestore] Erreur sauvegarde:", error);
+        } finally {
+            _isSyncing = false;
+        }
+    }
+
+    function _loadFromLocalStorage() {
+        try {
+            const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+            return raw ? JSON.parse(raw) : [];
+        } catch {
+            return [];
+        }
+    }
+
+    function _saveToLocalStorage(quizzes) {
+        try {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(quizzes));
+        } catch (e) {
+            console.warn("[LocalStorage] Quota dépassé:", e);
+        }
+    }
+
+    return {
+        load: loadQuizzesFromFirestore,
+        save: saveQuizzesToFirestore,
+        getCache: () => _quizzesCache
+    };
+})();
+
         const QUIZ_REGISTRY = {
             'test-quiz-1': {
                 id: 'test-quiz-1',
@@ -3851,6 +3951,28 @@
         // IMPORTANT: doit être défini AVANT cqGetQuizzes() et tout appel à cqGetQuizzes().
         const CQ_ADMIN_QUIZZES_STORAGE_KEY = 'cq_admin_quizzes_V2';
 
+        // Auto-sync wrapper pour les quizzes
+        const _origLocalStorageSetItem = localStorage.setItem;
+        let _syncTimeout;
+        localStorage.setItem = function(key, value) {
+            _origLocalStorageSetItem.call(this, key, value);
+
+            // Si c'est les quizzes, sync avec Firestore en arrière-plan
+            if (key === CQ_ADMIN_QUIZZES_STORAGE_KEY) {
+                clearTimeout(_syncTimeout);
+                _syncTimeout = setTimeout(() => {
+                    try {
+                        const quizzes = JSON.parse(value);
+                        FirestoreSync.save(quizzes).catch(err =>
+                            console.warn("[Sync] Erreur:", err)
+                        );
+                    } catch (e) {
+                        console.warn("[Sync] Erreur parse:", e);
+                    }
+                }, 1000); // Attendre 1s avant sync pour éviter trop de requêtes
+            }
+        };
+
         let cqSelectedModeVal = null;
         let cqGameToDelete = null;
         let cqSortCriteria = 'date';
@@ -3898,10 +4020,26 @@
         }
 
         // CQ quizzes utils (source unique de vérité)
+        let _quizzesLoadedFromFirestore = false;
         function cqGetQuizzes() {
+            // Charger depuis Firestore une seule fois au démarrage
+            if (!_quizzesLoadedFromFirestore && window.firebaseDB) {
+                _quizzesLoadedFromFirestore = true;
+                FirestoreSync.load().then(firestoreQuizzes => {
+                    if (firestoreQuizzes && firestoreQuizzes.length > 0) {
+                        console.log("[CQ] Quizzes chargés depuis Firestore:", firestoreQuizzes.length);
+                        localStorage.setItem(CQ_ADMIN_QUIZZES_STORAGE_KEY, JSON.stringify(firestoreQuizzes));
+                        // Rafraîchir l'affichage
+                        if (typeof cqRenderQuizzes === 'function') {
+                            cqRenderQuizzes();
+                        }
+                    }
+                }).catch(err => console.warn("[CQ] Erreur chargement Firestore:", err));
+            }
+
             let stored = localStorage.getItem(CQ_ADMIN_QUIZZES_STORAGE_KEY);
             if (!stored) {
-                const defaults = []; // Plus aucun faux quiz ici !
+                const defaults = [];
                 localStorage.setItem(CQ_ADMIN_QUIZZES_STORAGE_KEY, JSON.stringify(defaults));
                 return defaults;
             }
