@@ -1,5 +1,6 @@
 // Firebase Configuration
-(async () => {
+// Wait for Firebase SDK to load from CDN
+window.addEventListener('DOMContentLoaded', () => {
   const firebaseConfig = {
     apiKey: "AIzaSyB6CcjbibxW5OymcvHcliz2fOgPTuGuaUk",
     authDomain: "coasterquiz-13534.firebaseapp.com",
@@ -9,19 +10,28 @@
     appId: "1:9495944351:web:50f79c39bfa6e0a30396aa"
   };
 
-  // Initialize Firebase (globals loaded from CDN)
-  const app = firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  // Auth anonyme au démarrage
-  try {
-    const result = await auth.signInAnonymously();
-    console.log("[Firebase] Utilisateur anonyme connecté:", result.user.uid);
-    window.firebaseUser = result.user;
-    window.firebaseDB = db;
-    window.firebaseAuth = auth;
-  } catch (error) {
-    console.error("[Firebase] Erreur auth anonyme:", error);
+  if (typeof firebase === 'undefined') {
+    console.warn("[Firebase] SDK not loaded yet, retrying...");
+    setTimeout(() => window.dispatchEvent(new Event('DOMContentLoaded')), 100);
+    return;
   }
-})();
+
+  try {
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Auth anonyme
+    auth.signInAnonymously().then((result) => {
+      console.log("[Firebase] Utilisateur anonyme connecté:", result.user.uid);
+      window.firebaseUser = result.user;
+      window.firebaseDB = db;
+      window.firebaseAuth = auth;
+    }).catch((error) => {
+      console.error("[Firebase] Erreur auth anonyme:", error);
+    });
+  } catch (error) {
+    console.error("[Firebase] Erreur initialisation:", error);
+  }
+});

@@ -1,12 +1,3 @@
-// AudioManager stub - volume for question audio only
-const AudioManager = (() => {
-    return {
-        getVolume: () => 1.0,
-        setVolume: () => {},
-        init: () => {}
-    };
-})();
-
 // ============================================
 // FIRESTORE SYNC LAYER
 // ============================================
