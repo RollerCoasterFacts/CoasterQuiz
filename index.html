@@ -23,10 +23,6 @@
                 <button type="button" onclick="closeSettings(); openRegister('guest')" class="bg-[#E6DAC6] text-[#10172b] py-2.5 rounded-xl font-bold font-button uppercase text-sm">Créer un compte</button>
                 <button type="button" onclick="closeSettings(); openLogin('guest')" class="bg-[#D1D5DB] text-[#374151] py-2.5 rounded-xl font-bold font-button uppercase text-sm">Se connecter</button>
             </div>
-            <div class="flex flex-col gap-3">
-                <label class="font-button text-xs uppercase font-bold opacity-60">Volume</label>
-                <input type="range" class="w-full accent-[#660000] volume-slider">
-            </div>
         </div>
     </div>
 
@@ -44,10 +40,6 @@
                 <button type="button" onclick="closeSettings(); openLogin('landing')" class="bg-[#D1D5DB] text-[#374151] py-2.5 rounded-xl font-bold font-button uppercase text-sm">Se connecter</button>
                 <button type="button" onclick="openAdminAccess()" class="bg-[#660000] hover:bg-[#800000] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm transition">Accès admin</button>
             </div>
-            <div class="flex flex-col gap-3">
-                <label class="font-button text-xs uppercase font-bold opacity-60">Volume</label>
-                <input type="range" class="w-full accent-[#660000] volume-slider">
-            </div>
         </div>
     </div>
 
@@ -61,8 +53,6 @@
                 </button>
             </div>
             <div class="flex flex-col gap-3 mb-6">
-                <label class="font-button text-xs uppercase font-bold opacity-60">Volume</label>
-                <input type="range" class="w-full accent-[#660000] volume-slider">
                 <button type="button" onclick="logoutUser()" class="w-full bg-[#6B7280] text-white py-2.5 rounded-xl font-bold font-button uppercase text-sm hover:bg-[#4B5563] transition flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -82,10 +72,6 @@
                 <button type="button" onclick="closeAdminSettings()" class="modal-close-btn absolute -right-2 top-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
-            </div>
-            <div class="flex flex-col gap-3">
-                <label class="font-button text-xs uppercase font-bold opacity-60">Volume</label>
-                <input type="range" class="w-full accent-[#660000] volume-slider">
             </div>
         </div>
     </div>
@@ -2178,7 +2164,6 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    <script src="js/audio.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+const QUESTION_AUDIO_VOLUME = 0.8;
 // ============================================
 // FIRESTORE SYNC LAYER
 // ============================================
@@ -528,7 +529,6 @@ const FirestoreSync = (() => {
                 password: password
             }));
 
-            playSound('action-confirm');
             showView('view-user-home');
             // Mettre à jour l'état du header immédiatement
             updateHeaderAuthState();
@@ -621,7 +621,6 @@ const FirestoreSync = (() => {
             successBlock.classList.remove('hidden');
             successBlock.style.display = 'flex';
             document.getElementById('register-success-pseudo').textContent = result.user.pseudo;
-            playSound('action-confirm');
         }
 
         // Track whether we're in guest mode (independent of login session)
@@ -1495,7 +1494,6 @@ const FirestoreSync = (() => {
 
         // --- Modale "Gérer les catégories" ---
         function cqOpenCategoriesModal() {
-            playSound('modal-open');
             cqCategoryPendingDeleteId = null;
             cqRenderCategoriesModal();
             const modal = document.getElementById('modal-cq-categories');
@@ -1505,7 +1503,6 @@ const FirestoreSync = (() => {
         }
 
         function cqCloseCategoriesModal() {
-            playSound('modal-close');
             cqCategoryPendingDeleteId = null;
             const modal = document.getElementById('modal-cq-categories');
             if (modal) modal.classList.add('hidden');
@@ -2090,13 +2087,12 @@ const FirestoreSync = (() => {
             cqRenderFavoritesModal();
 
             const modal = document.getElementById('modal-cq-favorites');
-            if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+            if (modal) {  modal.classList.remove('hidden'); }
             const mainContent = document.getElementById('main-content');
             if (mainContent) mainContent.classList.add('blur-bg');
         }
 
         function cqCloseFavoritesModal() {
-            playSound('modal-close');
             const modal = document.getElementById('modal-cq-favorites');
             if (modal) modal.classList.add('hidden');
             const mainContent = document.getElementById('main-content');
@@ -2193,7 +2189,6 @@ const FirestoreSync = (() => {
             const playArea = document.getElementById('game-play-area');
             playArea.classList.remove('hidden');
             playArea.style.display = 'flex';
-            playSound('quiz-start');
             renderQuestion();
         }
 
@@ -2206,7 +2201,6 @@ const FirestoreSync = (() => {
             // Masquer le timer en mode sans chrono (le score reste visible)
             const timerTrack = document.querySelector('.game-timer-track');
             if (timerTrack) timerTrack.style.display = 'none';
-            playSound('quiz-start');
             renderQuestion();
         }
 
@@ -2244,7 +2238,7 @@ const FirestoreSync = (() => {
             _gameStopCurrentAudio();
             if (!src) return;
             _gameCurrentAudio = new Audio(src);
-            _gameCurrentAudio.volume = AudioManager.getVolume();
+            _gameCurrentAudio.volume = QUESTION_AUDIO_VOLUME;
             _gameCurrentAudio.play().catch(() => {});
         }
 
@@ -2257,7 +2251,7 @@ const FirestoreSync = (() => {
                 mediaHtml += `<img src="${qImg}" class="game-question-img" alt="Question">`;
             }
             if (qAudio) {
-                mediaHtml += `<div class="game-question-audio-wrap"><button type="button" class="game-audio-play-btn" onclick="(function(){var a=new Audio('${qAudio.replace(/'/g,"\\'")}');a.volume=AudioManager.getVolume();a.play().catch(()=>{});})()">▶ Écouter la question</button></div>`;
+                mediaHtml += `<div class="game-question-audio-wrap"><button type="button" class="game-audio-play-btn" onclick="(function(){var a=new Audio('${qAudio.replace(/'/g,"\\'")}');a.volume=QUESTION_AUDIO_VOLUME;a.play().catch(()=>{});})()">▶ Écouter la question</button></div>`;
             }
             const mediaEl = document.getElementById('game-question-media');
             if (mediaEl) mediaEl.innerHTML = mediaHtml;
@@ -2352,7 +2346,6 @@ const FirestoreSync = (() => {
             const isSelected = card.dataset.selected === '1';
             card.dataset.selected = isSelected ? '0' : '1';
             card.classList.toggle('answer-multi-selected', !isSelected);
-            playSound('quiz-select');
         }
 
         function handleMultiValidate() {
@@ -2378,9 +2371,7 @@ const FirestoreSync = (() => {
             if (isAllCorrect) {
                 currentGame.score += cqNoTimerMode ? BASE_POINTS : computeQuestionPoints();
                 updateScoreDisplay();
-                playSound('quiz-correct');
             } else {
-                playSound('quiz-wrong');
             }
 
             // Révéler : vert = correct, rouge = mauvaise sélection
@@ -2469,14 +2460,11 @@ const FirestoreSync = (() => {
             const isCorrect = index === correctIndex;
 
             // Son sélection immédiat, puis feedback après révélation
-            playSound('quiz-select');
 
             if (isCorrect) {
                 currentGame.score += cqNoTimerMode ? BASE_POINTS : computeQuestionPoints();
                 updateScoreDisplay();
-                setTimeout(() => playSound('quiz-correct'), 80);
             } else {
-                setTimeout(() => playSound('quiz-wrong'), 80);
             }
 
             setAnswersDisabled();
@@ -2489,7 +2477,6 @@ const FirestoreSync = (() => {
 
             currentGame.canAnswer = false;
             _gameStopCurrentAudio();
-            playSound('quiz-timeout');
             setAnswersDisabled();
             revealAnswers(-1);
             scheduleNextQuestion();
@@ -2497,7 +2484,6 @@ const FirestoreSync = (() => {
 
         function finishQuiz() {
             stopGameTimers();
-            playSound('quiz-finish');
             // Restaurer le timer et le score si masqués
             const scoreEl = document.getElementById('game-score');
             if (scoreEl) scoreEl.style.display = '';
@@ -2547,7 +2533,6 @@ const FirestoreSync = (() => {
                 const exitFs = document.exitFullscreen ? document.exitFullscreen() : document.webkitExitFullscreen ? Promise.resolve(document.webkitExitFullscreen()) : Promise.resolve();
                 exitFs.then(() => {
                     showView('view-results');
-                    setTimeout(() => playSound('quiz-result'), 300);
                     const resultsCard = document.getElementById('results-game-card-wrap');
                     if (resultsCard) {
                         const req = resultsCard.requestFullscreen ? resultsCard.requestFullscreen() : resultsCard.webkitRequestFullscreen ? resultsCard.webkitRequestFullscreen() : null;
@@ -2555,7 +2540,6 @@ const FirestoreSync = (() => {
                 }).catch(() => showView('view-results'));
             } else {
                 showView('view-results');
-                setTimeout(() => playSound('quiz-result'), 300);
             }
         }
 
@@ -2584,7 +2568,6 @@ const FirestoreSync = (() => {
 
         function replayCurrentQuiz() {
             if (!currentGame.quiz) return;
-            playSound('quiz-replay');
             // Détecter si on est en plein écran sur la carte résultats
             const wasInResultsFullscreen = !!(
                 document.fullscreenElement === document.getElementById('results-game-card-wrap') ||
@@ -2689,13 +2672,12 @@ const FirestoreSync = (() => {
             cqFavoritesGamePageDraftSelection = cqGetFavorites().slice();
             cqRenderFavoritesGamePageModal();
             const modal = document.getElementById('modal-cq-favorites-gamepage');
-            if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+            if (modal) {  modal.classList.remove('hidden'); }
             const mainContent = document.getElementById('main-content');
             if (mainContent) mainContent.classList.add('blur-bg');
         }
 
         function cqCloseFavoritesGamePageModal() {
-            playSound('modal-close');
             const modal = document.getElementById('modal-cq-favorites-gamepage');
             if (modal) modal.classList.add('hidden');
             const mainContent = document.getElementById('main-content');
@@ -2752,7 +2734,6 @@ const FirestoreSync = (() => {
         }
 
         function openSettings() {
-            playSound('modal-open');
             document.getElementById('modal-settings-landing').classList.add('hidden');
             document.getElementById('modal-settings-guest').classList.add('hidden');
             document.getElementById('modal-settings-user').classList.add('hidden');
@@ -2770,71 +2751,20 @@ const FirestoreSync = (() => {
         }
 
         function openAdminSettings() {
-            playSound('modal-open');
             document.getElementById('modal-settings-admin').classList.remove('hidden');
             document.getElementById('main-content').classList.add('blur-bg');
         }
 
         function closeAdminSettings() {
-            playSound('modal-close');
             document.getElementById('modal-settings-admin').classList.add('hidden');
             document.getElementById('main-content').classList.remove('blur-bg');
         }
 
-        const CQ_PREFS_KEY = 'cq_prefs';
-
-        function cqLoadVolumePrefs() {
-            try {
-                const raw = localStorage.getItem(CQ_PREFS_KEY);
-                if (!raw) return 80; // valeur par défaut
-                const prefs = JSON.parse(raw);
-                return (typeof prefs.volume === 'number') ? Math.round(prefs.volume * 100) : 80;
-            } catch (_) { return 80; }
-        }
-
-        function cqSaveVolumePrefs(sliderValue) {
-            try {
-                const existing = JSON.parse(localStorage.getItem(CQ_PREFS_KEY) || '{}');
-                existing.volume = parseInt(sliderValue, 10) / 100;
-                localStorage.setItem(CQ_PREFS_KEY, JSON.stringify(existing));
-            } catch (_) {}
-        }
-
-        function synchronizeVolumeSliders() {
-            const sliders = Array.from(document.querySelectorAll('.volume-slider'));
-            if (!sliders.length) return;
-
-            // Restaurer la valeur persistée
-            const savedValue = cqLoadVolumePrefs();
-            sliders.forEach(s => { s.value = savedValue; });
-
-            // Synchroniser AudioManager si disponible
-            if (typeof AudioManager !== 'undefined') {
-                AudioManager.setVolume(savedValue / 100);
-            }
-
-            const syncValue = (source) => {
-                sliders.forEach((slider) => {
-                    if (slider !== source) slider.value = source.value;
-                });
-                cqSaveVolumePrefs(source.value);
-                if (typeof AudioManager !== 'undefined') {
-                    AudioManager.setVolume(parseInt(source.value, 10) / 100);
-                }
-            };
-
-            sliders.forEach((slider) => {
-                slider.addEventListener('input', () => syncValue(slider));
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', synchronizeVolumeSliders);
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof updateNotifBadges === 'function') updateNotifBadges();
         });
 
         function openLandingSettings() {
-            playSound('modal-open');
             document.getElementById('modal-settings-guest').classList.add('hidden');
             document.getElementById('modal-settings-user').classList.add('hidden');
             document.getElementById('modal-settings-landing').classList.remove('hidden');
@@ -2842,7 +2772,6 @@ const FirestoreSync = (() => {
         }
 
         function closeSettings() {
-            playSound('modal-close');
             closeAdminAccess();
             closeDeleteAccountConfirm();
             closeAdminSettings();
@@ -2854,7 +2783,6 @@ const FirestoreSync = (() => {
         }
 
         function openDeleteAccountConfirm() {
-            playSound('modal-open');
             document.getElementById('modal-delete-account').classList.remove('hidden');
         }
 
@@ -2875,7 +2803,6 @@ const FirestoreSync = (() => {
             const user = AuthService.getCurrentUser();
             if (!user) return;
 
-            playSound('action-delete');
             await AuthService.deleteAccount(user.id);
             localStorage.removeItem('coasterquiz_persistent_session');
             closeSettings();
@@ -3182,11 +3109,9 @@ const FirestoreSync = (() => {
         }
 
         function openDeleteAvatarConfirm() {
-            playSound('modal-open');
             document.getElementById('modal-delete-avatar').classList.remove('hidden');
         }
         function closeDeleteAvatarConfirm() {
-            playSound('modal-close');
             document.getElementById('modal-delete-avatar').classList.add('hidden');
         }
         function confirmDeleteAvatar() {
@@ -3217,7 +3142,6 @@ const FirestoreSync = (() => {
 
             // Remplir la modale
             _fillProfileModal(targetUser);
-            playSound('modal-open');
             document.getElementById('modal-view-profile').classList.remove('hidden');
         }
 
@@ -3236,7 +3160,6 @@ const FirestoreSync = (() => {
             }
 
             _fillProfileModal(targetUser);
-            playSound('modal-open');
             document.getElementById('modal-view-profile').classList.remove('hidden');
         }
 
@@ -3337,7 +3260,6 @@ const FirestoreSync = (() => {
         }
 
         function closeProfileModal() {
-            playSound('modal-close');
             document.getElementById('modal-view-profile').classList.add('hidden');
         }
 
@@ -3391,7 +3313,6 @@ const FirestoreSync = (() => {
         }
 
         function openChangePassword() {
-            playSound('modal-open');
             document.getElementById('change-old-password').value = '';
             document.getElementById('change-new-password').value = '';
             document.getElementById('change-confirm-password').value = '';
@@ -3403,19 +3324,16 @@ const FirestoreSync = (() => {
         }
 
         function closeChangePassword() {
-            playSound('modal-close');
             document.getElementById('modal-change-password').classList.add('hidden');
         }
 
         function closeChangePasswordConfirm() {
-            playSound('modal-close');
             document.getElementById('modal-change-password-confirm').classList.add('hidden');
         }
 
         let cqPendingPseudoChange = null;
 
         function openChangePseudo() {
-            playSound('modal-open');
             const input = document.getElementById('change-pseudo-input');
             const err = document.getElementById('change-pseudo-error');
             const user = AuthService.getCurrentUser();
@@ -3431,7 +3349,6 @@ const FirestoreSync = (() => {
         }
 
         function closeChangePseudo() {
-            playSound('modal-close');
             const modal = document.getElementById('modal-change-pseudo');
             if (modal) modal.classList.add('hidden');
         }
@@ -3475,12 +3392,12 @@ const FirestoreSync = (() => {
 
         function openChangePseudoConfirm() {
             const modal = document.getElementById('modal-change-pseudo-confirm');
-            if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+            if (modal) {  modal.classList.remove('hidden'); }
         }
 
         function closeChangePseudoConfirm() {
             const modal = document.getElementById('modal-change-pseudo-confirm');
-            if (modal) { playSound('modal-close'); modal.classList.add('hidden'); }
+            if (modal) {  modal.classList.add('hidden'); }
             cqPendingPseudoChange = null;
         }
 
@@ -3584,7 +3501,6 @@ const FirestoreSync = (() => {
             window.pendingPasswordChange = newPassword;
             
             closeChangePassword();
-            playSound('modal-open');
             document.getElementById('modal-change-password-confirm').classList.remove('hidden');
         }
 
@@ -3605,14 +3521,12 @@ const FirestoreSync = (() => {
         }
 
         function openAdminAccess() {
-            playSound('modal-open');
             document.getElementById('admin-password-input').value = '';
             document.getElementById('admin-password-error').textContent = '';
             document.getElementById('modal-admin-access').classList.remove('hidden');
         }
 
         function closeAdminAccess() {
-            playSound('modal-close');
             document.getElementById('modal-admin-access').classList.add('hidden');
             document.getElementById('admin-password-input').value = '';
             document.getElementById('admin-password-error').textContent = '';
@@ -3696,7 +3610,6 @@ const FirestoreSync = (() => {
         function openBanContest() {
             const modal = document.getElementById('modal-ban-contest');
             if (modal) {
-                playSound('modal-open');
                 const ta = document.getElementById('ban-contest-message');
                 if (ta) ta.value = '';
                 modal.classList.remove('hidden');
@@ -3705,7 +3618,7 @@ const FirestoreSync = (() => {
 
         function closeBanContest() {
             const modal = document.getElementById('modal-ban-contest');
-            if (modal) { playSound('modal-close'); modal.classList.add('hidden'); }
+            if (modal) {  modal.classList.add('hidden'); }
         }
 
         function submitBanContest() {
@@ -3789,7 +3702,6 @@ const FirestoreSync = (() => {
 
         /* --- Modale Bannissement --- */
         function openBanModal(userId, pseudo, savedValues) {
-            playSound('modal-open');
             _banModalData = { userId, pseudo };
             // Réinitialiser ou restaurer les valeurs
             const typeRadios = document.querySelectorAll('input[name="ban-type"]');
@@ -3819,7 +3731,6 @@ const FirestoreSync = (() => {
         }
 
         function closeBanModal() {
-            playSound('modal-close');
             document.getElementById('modal-ban').classList.add('hidden');
             _banModalData = null;
             _banFormValues = null;
@@ -3855,12 +3766,10 @@ const FirestoreSync = (() => {
 
             const confirmPseudoEl = document.getElementById('ban-confirm-pseudo');
             if (confirmPseudoEl) confirmPseudoEl.textContent = _banModalData?.pseudo || '';
-            playSound('modal-open');
             document.getElementById('modal-ban-confirm').classList.remove('hidden');
         }
 
         function closeBanConfirm() {
-            playSound('modal-close');
             document.getElementById('modal-ban-confirm').classList.add('hidden');
             // Revenir à la première modale avec les valeurs sauvegardées
             if (_banModalData && _banFormValues) {
@@ -3891,7 +3800,6 @@ const FirestoreSync = (() => {
             document.getElementById('modal-ban-confirm').classList.add('hidden');
             _banModalData = null;
             _banFormValues = null;
-            playSound('action-confirm');
             cqRenderModeration(document.getElementById('mod-search-input')?.value || '');
         }
 
@@ -3899,7 +3807,6 @@ const FirestoreSync = (() => {
         let _deleteUserData = null;
 
         function openDeleteUserModal(userId, pseudo, isBanned) {
-            playSound('modal-open');
             _deleteUserData = { userId, pseudo };
             if (!isBanned) {
                 // Compte actif : impossible de supprimer
@@ -3913,13 +3820,11 @@ const FirestoreSync = (() => {
         }
 
         function closeDeleteUserActive() {
-            playSound('modal-close');
             document.getElementById('modal-delete-user-active').classList.add('hidden');
             _deleteUserData = null;
         }
 
         function closeDeleteUserConfirm() {
-            playSound('modal-close');
             document.getElementById('modal-delete-user-confirm').classList.add('hidden');
             _deleteUserData = null;
         }
@@ -3934,7 +3839,6 @@ const FirestoreSync = (() => {
 
             document.getElementById('modal-delete-user-confirm').classList.add('hidden');
             _deleteUserData = null;
-            playSound('action-delete');
             cqRenderModeration(document.getElementById('mod-search-input')?.value || '');
         }
 
@@ -4205,13 +4109,12 @@ const FirestoreSync = (() => {
             }
 
             const modal = document.getElementById('modal-change-status-confirm');
-            if (modal) { modal.classList.remove('hidden'); playSound('modal-open'); }
+            if (modal) { modal.classList.remove('hidden');  }
             const mainContent = document.getElementById('main-content');
             if (mainContent) mainContent.classList.add('blur-bg');
         }
 
         function closeChangeStatusConfirm() {
-            playSound('modal-close');
             const modal = document.getElementById('modal-change-status-confirm');
             if (modal) modal.classList.add('hidden');
             const mainContent = document.getElementById('main-content');
@@ -4227,7 +4130,6 @@ const FirestoreSync = (() => {
             if (idx > -1) {
                 quizzes[idx].status = newStatus;
                 localStorage.setItem(CQ_ADMIN_QUIZZES_STORAGE_KEY, JSON.stringify(quizzes));
-                playSound('action-confirm');
                 cqRenderManageGames();
                 cqRenderQuizzes();
                 cqSyncPlayerViews();
@@ -4242,7 +4144,7 @@ const FirestoreSync = (() => {
             
             if (quiz?.status === 'online') {
                 const modal = document.getElementById('modal-cq-delete-online');
-                if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+                if (modal) {  modal.classList.remove('hidden'); }
                 return;
             }
 
@@ -4466,7 +4368,6 @@ const FirestoreSync = (() => {
         }
 
         function cqCloseDeleteOnlineModal() {
-            playSound('modal-close');
             const modal = document.getElementById('modal-cq-delete-online');
             if (modal) modal.classList.add('hidden');
             const mainContent = document.getElementById('main-content');
@@ -4486,7 +4387,7 @@ const FirestoreSync = (() => {
 
             if (isOnline) {
                 const modal = document.getElementById('modal-cq-delete-online');
-                if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+                if (modal) {  modal.classList.remove('hidden'); }
                 const mainContent = document.getElementById('main-content');
                 if (mainContent) mainContent.classList.add('blur-bg');
                 return;
@@ -4498,7 +4399,6 @@ const FirestoreSync = (() => {
             }
             const modal = document.getElementById('modal-delete-game-confirm');
             if (modal) {
-                playSound('modal-open');
                 modal.classList.remove('hidden');
             }
             const mainContent = document.getElementById('main-content');
@@ -4508,7 +4408,6 @@ const FirestoreSync = (() => {
         }
 
         function closeDeleteGameConfirm() {
-            playSound('modal-close');
             cqGameToDelete = null;
             const modal = document.getElementById('modal-delete-game-confirm');
             if (modal) {
@@ -4527,7 +4426,7 @@ const FirestoreSync = (() => {
             
             if (quiz?.status === 'online') {
                 const modal = document.getElementById('modal-cq-delete-online');
-                if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+                if (modal) {  modal.classList.remove('hidden'); }
                 return;
             }
 
@@ -4688,7 +4587,6 @@ const FirestoreSync = (() => {
         });
 
         function cqOpenFilterModal() {
-            playSound('modal-open');
             const criteriaSelect = document.getElementById('cq-filter-criteria');
             const directionSelect = document.getElementById('cq-filter-direction');
             if (criteriaSelect) criteriaSelect.value = cqSortCriteria;
@@ -4701,7 +4599,6 @@ const FirestoreSync = (() => {
         }
 
         function closeCqFilterModal() {
-            playSound('modal-close');
             const modal = document.getElementById('modal-cq-filter');
             if (modal) modal.classList.add('hidden');
             const mainContent = document.getElementById('main-content');
@@ -5219,14 +5116,13 @@ const FirestoreSync = (() => {
             cqPendingDeleteDiapoIndex = cqQuizDraft.slideIndex;
 
             const modal = document.getElementById('modal-cq-confirm-delete-diapo');
-            if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+            if (modal) {  modal.classList.remove('hidden'); }
 
             const textEl = document.getElementById('cq-confirm-delete-diapo-text');
             if (textEl) textEl.textContent = 'Cette action est irréversible.';
         }
 
         function cqCloseConfirmDeleteDiapo() {
-            playSound('modal-close');
             cqPendingDeleteDiapoIndex = null;
             if (typeof _gcrPendingDelete !== 'undefined') _gcrPendingDelete = false;
             const modal = document.getElementById('modal-cq-confirm-delete-diapo');
@@ -5238,7 +5134,7 @@ const FirestoreSync = (() => {
             if (typeof _gcrPendingDelete !== 'undefined' && _gcrPendingDelete) {
                 _gcrPendingDelete = false;
                 const modal = document.getElementById('modal-cq-confirm-delete-diapo');
-                if (modal) { playSound('modal-close'); modal.classList.add('hidden'); }
+                if (modal) {  modal.classList.add('hidden'); }
                 const slides = _gcrGetSlides();
                 slides.splice(_gcrEdCurrentDiapoIdx, 1);
                 cqGcrLoadDiapoIntoEditor(Math.max(0, _gcrEdCurrentDiapoIdx - 1));
@@ -5279,13 +5175,11 @@ const FirestoreSync = (() => {
         function cqOpenConfirmCreateQuiz() {
             const modal = document.getElementById('modal-cq-confirm-create');
             if (modal) {
-                playSound('modal-open');
                 modal.classList.remove('hidden');
             }
         }
 
         function cqCloseConfirmCreateQuiz() {
-            playSound('modal-close');
             const modal = document.getElementById('modal-cq-confirm-create');
             if (modal) modal.classList.add('hidden');
         }
@@ -5398,11 +5292,10 @@ const FirestoreSync = (() => {
             }
 
             const modal = document.getElementById('modal-cq-confirm-rename');
-            if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+            if (modal) {  modal.classList.remove('hidden'); }
         }
 
         function cqCloseRenameModal() {
-            playSound('modal-close');
             cqPendingRenameTitle = null;
             cqRenameQuizOriginalTitle = null;
             const modal = document.getElementById('modal-cq-confirm-rename');
@@ -5767,8 +5660,6 @@ const FirestoreSync = (() => {
                 tabClassic.classList.remove('msg-tab-active');
                 tabAdmin.classList.add('msg-tab-active');
                 msgRenderUserChat();
-                // Son de réception si messages admin non lus
-                if (notifCountUserUnreadAdmin() > 0) playSound('msg-receive');
                 notifMarkUserAdminRead();
             }
         }
@@ -5853,7 +5744,6 @@ const FirestoreSync = (() => {
             msgCancelReplyUser();
             msgUpdateCounter('msg-admin-input', 'msg-admin-counter');
             msgRenderUserChat();
-            playSound('msg-send');
             if (typeof updateNotifBadges === 'function') updateNotifBadges();
         }
 
@@ -5976,7 +5866,6 @@ const FirestoreSync = (() => {
             gcCancelReplyUser();
             msgUpdateCounter('msg-classic-input','msg-classic-counter');
             gcRenderMessages('msg-classic-chat-messages', false);
-            playSound('msg-send');
         }
 
         // --- Admin side ---
@@ -6015,7 +5904,6 @@ const FirestoreSync = (() => {
             gcCancelReplyAdmin();
             msgUpdateCounter('msg-admin-classic-input','msg-admin-classic-counter');
             gcRenderMessages('msg-admin-classic-messages', true);
-            playSound('msg-send');
         }
 
         // --- Report message chat ---
@@ -6025,13 +5913,11 @@ const FirestoreSync = (() => {
             const user = AuthService.getCurrentUser();
             if (!user) return;
             _gcPendingReportMsgId = msgId;
-            playSound('modal-open');
             document.getElementById('modal-chat-report-confirm').classList.remove('hidden');
         }
 
         function gcCancelChatReport() {
             _gcPendingReportMsgId = null;
-            playSound('modal-close');
             document.getElementById('modal-chat-report-confirm').classList.add('hidden');
         }
 
@@ -6067,18 +5953,15 @@ const FirestoreSync = (() => {
 
             _gcPendingReportMsgId = null;
             document.getElementById('modal-chat-report-confirm').classList.add('hidden');
-            playSound('action-confirm');
             if (typeof updateNotifBadges === 'function') updateNotifBadges();
         }
 
         // --- Réinitialisation (admin) ---
         function openGlobalChatResetConfirm() {
-            playSound('modal-open');
             document.getElementById('modal-global-chat-reset').classList.remove('hidden');
         }
 
         function closeGlobalChatResetConfirm() {
-            playSound('modal-close');
             document.getElementById('modal-global-chat-reset').classList.add('hidden');
         }
 
@@ -6285,13 +6168,11 @@ const FirestoreSync = (() => {
         }
 
         function reportAdminAskDelete(id) {
-            playSound('modal-open');
             _reportDeletePendingId = id;
             document.getElementById('modal-report-delete-confirm').classList.remove('hidden');
         }
 
         function reportDeleteCancel() {
-            playSound('modal-close');
             _reportDeletePendingId = null;
             document.getElementById('modal-report-delete-confirm').classList.add('hidden');
         }
@@ -6302,7 +6183,6 @@ const FirestoreSync = (() => {
             reportAdminSaveAll(reports);
             if (typeof updateNotifBadges === 'function') updateNotifBadges();
             _reportDeletePendingId = null;
-            playSound('action-delete');
             document.getElementById('modal-report-delete-confirm').classList.add('hidden');
             // Return to list view
             const detailView = document.getElementById('msg-admin-reports-detail-view');
@@ -6444,17 +6324,14 @@ const FirestoreSync = (() => {
 
         function msgAdminDeleteConversation() {
             if (!msgAdminCurrentConv) return;
-            playSound('modal-open');
             document.getElementById('modal-msg-admin-delete-conv').classList.remove('hidden');
         }
 
         function msgAdminDeleteConvCancel() {
-            playSound('modal-close');
             document.getElementById('modal-msg-admin-delete-conv').classList.add('hidden');
         }
 
         function msgAdminDeleteConvConfirm() {
-            playSound('action-delete');
             document.getElementById('modal-msg-admin-delete-conv').classList.add('hidden');
             if (!msgAdminCurrentConv) return;
             const msgs = msgGetMessages().filter(m => m.convId !== msgAdminCurrentConv);
@@ -6544,7 +6421,6 @@ const FirestoreSync = (() => {
             msgCancelReplyAdmin();
             msgUpdateCounter('msg-admin-side-input', 'msg-admin-side-counter');
             msgAdminRenderConversation();
-            playSound('msg-send');
             if (typeof updateNotifBadges === 'function') updateNotifBadges();
         }
 
@@ -6555,17 +6431,14 @@ const FirestoreSync = (() => {
         let _reportImages = [];
 
         function openReportModal() {
-            playSound('modal-open');
             document.getElementById('modal-report').classList.remove('hidden');
         }
 
         function closeReportModal() {
-            playSound('modal-close');
             document.getElementById('modal-report').classList.add('hidden');
         }
 
         function closeReportConfirm() {
-            playSound('modal-close');
             document.getElementById('modal-report-confirm').classList.add('hidden');
         }
 
@@ -6624,7 +6497,6 @@ const FirestoreSync = (() => {
             const title = document.getElementById('report-title-input').value.trim();
             const desc = document.getElementById('report-desc-input').value.trim();
             if (!title || !desc) return;
-            playSound('modal-open');
             document.getElementById('modal-report-confirm').classList.remove('hidden');
         }
 
@@ -6662,7 +6534,6 @@ const FirestoreSync = (() => {
 
             document.getElementById('modal-report-confirm').classList.add('hidden');
             document.getElementById('modal-report').classList.add('hidden');
-            playSound('action-confirm');
             if (typeof updateNotifBadges === 'function') updateNotifBadges();
         }
 
@@ -6908,7 +6779,6 @@ const FirestoreSync = (() => {
                 stopGameTimers();
                 currentGame.score += cqNoTimerMode ? BASE_POINTS : computeQuestionPoints();
                 updateScoreDisplay();
-                playSound('quiz-correct');
                 _showRedactionFeedback(true, correct);
                 input.disabled = true;
                 const skipBtn = document.getElementById('game-redaction-skip-btn');
@@ -6916,7 +6786,6 @@ const FirestoreSync = (() => {
                 scheduleNextQuestion();
             } else {
                 // Wrong — flash red, keep timer
-                playSound('quiz-wrong');
                 _flashRedactionError(input);
                 _showRedactionFeedback(false, null);
                 input.value = '';
@@ -6961,7 +6830,6 @@ const FirestoreSync = (() => {
             if (input) input.disabled = true;
             const skipBtn = document.getElementById('game-redaction-skip-btn');
             if (skipBtn) skipBtn.style.display = 'none';
-            playSound('quiz-timeout');
             scheduleNextQuestion();
         }
 
@@ -6973,7 +6841,6 @@ const FirestoreSync = (() => {
                 if (!currentGame.canAnswer) return;
                 currentGame.canAnswer = false;
                 _gameStopCurrentAudio();
-                playSound('quiz-timeout');
                 const question = currentGame.quiz.questions[currentGame.currentQIndex];
                 const correctAnswer = question && question.answers.find(a => a.isCorrect);
                 const correct = correctAnswer ? correctAnswer.text : '?';
@@ -7053,7 +6920,7 @@ const FirestoreSync = (() => {
                     item.hints.forEach(h => {
                         if (h.type === 'text') hintsHtml += `<span>${escapeHtml(h.value || '')}</span>`;
                         else if (h.type === 'image' && h.value) hintsHtml += `<img src="${h.value}" class="jp-hint-img" alt="Indice">`;
-                        else if (h.type === 'audio' && h.value) hintsHtml += `<button type="button" onclick="(function(){var a=new Audio('${h.value.replace(/'/g,"\\'")}');a.volume=AudioManager.getVolume();a.play().catch(()=>{});})()">🔊</button>`;
+                        else if (h.type === 'audio' && h.value) hintsHtml += `<button type="button" onclick="(function(){var a=new Audio('${h.value.replace(/'/g,"\\'")}');a.volume=QUESTION_AUDIO_VOLUME;a.play().catch(()=>{});})()">🔊</button>`;
                     });
                     hintsHtml += '</div>';
                 }
@@ -7082,7 +6949,6 @@ const FirestoreSync = (() => {
                     // Clear input
                     const input = document.getElementById('game-jetpunk-input');
                     if (input) input.value = '';
-                    playSound('quiz-correct');
                     currentGame.score += cqNoTimerMode ? BASE_POINTS : Math.round(computeQuestionPoints() / _jpState.total);
                     updateScoreDisplay();
                     _renderJpList();
@@ -7090,7 +6956,6 @@ const FirestoreSync = (() => {
                     if (_jpState.foundCount >= _jpState.total) {
                         currentGame.canAnswer = false;
                         stopGameTimers();
-                        playSound('quiz-finish');
                         setTimeout(() => finishQuiz(), 800);
                     }
                     break;
@@ -7106,7 +6971,6 @@ const FirestoreSync = (() => {
                 if (!currentGame.canAnswer) return;
                 currentGame.canAnswer = false;
                 _gameStopCurrentAudio();
-                playSound('quiz-timeout');
                 // Reveal all unfound answers
                 if (_jpState) {
                     _jpState.items.forEach(i => { i.found = true; });
@@ -7970,7 +7834,7 @@ function cqGcrAskDeleteDiapo() {
     if (_gcrGetSlides().length <= 1) return;
     _gcrPendingDelete = true;
     const modal = document.getElementById('modal-cq-confirm-delete-diapo');
-    if (modal) { playSound('modal-open'); modal.classList.remove('hidden'); }
+    if (modal) {  modal.classList.remove('hidden'); }
     const textEl = document.getElementById('cq-confirm-delete-diapo-text');
     if (textEl) textEl.textContent = 'Cette action est irréversible.';
 }
@@ -8393,8 +8257,6 @@ function _gcrGameHandleClick(latlng, question) {
     currentGame.score += pts;
     updateScoreDisplay();
 
-    if (pts > 0) playSound('quiz-correct'); else playSound('quiz-wrong');
-
     // Pop-up résultat après 2s
     _gcrGamePopupTimer = setTimeout(() => {
         _gcrGameShowPopup(distKm, pts);
@@ -8448,7 +8310,6 @@ handleTimeUp = function() {
         currentGame.canAnswer = false;
         stopGameTimers();
         _gameStopCurrentAudio();
-        playSound('quiz-timeout');
         // Révéler le point cible via l'overlay
         const question = currentGame.quiz.questions[currentGame.currentQIndex];
         if (question && question.gcrTarget && _gcrGameMap) {
@@ -8702,7 +8563,6 @@ function cqQmApplyImageToAllSlides() {
         slide.qmImageData = imageToCopy;
     });
 
-    playSound('quiz-correct');
 }
 
 function cqQmDrawCanvas() {
@@ -8917,7 +8777,6 @@ function cqQmAskDeleteDiapo() {
     if (cqQuizDraft.slides.length <= 1) return;
     const modal = document.getElementById('modal-cq-confirm-delete-diapo');
     if (modal) {
-        playSound('modal-open');
         modal.classList.remove('hidden');
     }
     const textEl = document.getElementById('cq-confirm-delete-diapo-text');
@@ -9305,11 +9164,9 @@ function cqQmGameClick(e, canvas, question, offsetX, offsetY, scale) {
         stopGameTimers();
         currentGame.score += cqNoTimerMode ? BASE_POINTS : computeQuestionPoints();
         updateScoreDisplay();
-        playSound('quiz-correct');
 
         cqQmFlashZone(canvas, question, offsetX, offsetY, scale, clickedZone, 'green', 2000);
     } else {
-        playSound('quiz-wrong');
         cqQmFlashZone(canvas, question, offsetX, offsetY, scale, clickedZone, 'red', 500);
 
         if (_qmGameAttempts >= 3) {

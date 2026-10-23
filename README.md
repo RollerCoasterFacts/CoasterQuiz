@@ -21,7 +21,6 @@ Application web interactive de création et de jeu de quiz avec plusieurs modes 
 
 - `index.html` - Interface utilisateur
 - `js/script.js` - Logique applicative
-- `js/audio.js` - Gestion audio
 - `css/styles.css` - Styles
 - `assets/` - Images (fond `rollercoaster.png`)
 - `docs/` - Notes (liste des montagnes, to-do)
