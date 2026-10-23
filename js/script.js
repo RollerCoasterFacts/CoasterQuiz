@@ -38,7 +38,7 @@ const FirestoreSync = (() => {
     return { load, save };
 })();
 
-window.addEventListener("firebase-ready", () => cqGetQuizzes());
+window.addEventListener("firebase-ready", () => { _quizzesLoadedFromFirestore = false; cqGetQuizzes(); });
 
         const QUIZ_REGISTRY = {
             'test-quiz-1': {
@@ -74,52 +74,18 @@ window.addEventListener("firebase-ready", () => cqGetQuizzes());
         const FEEDBACK_DELAY_MS = 2000;
         const TIMER_TICK_MS = 50;
 
-        const ADMIN_STORAGE_KEY = 'cq_a';
-        const _XK = 0xA7;
-        const _XD = [0x4C,0x7E,0xE9,0x1B,0x98,0xEE,0xE4,0x08,0x19,0x9C,0x5F,0x82,0xEB,0x57,0x59,0xFA,0x18,0xE2,0x93,0x8B,0x16,0xD1,0x1F,0xFB,0xB0,0x36,0x3F,0x0B,0xBC,0x2F,0xF8,0x7F];
-        let _adminSessionDigest = null;
+        const ADMIN_EMAIL = "samuel.dammann750@gmail.com";
 
-        async function sha256Hex(value) {
-            const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
-            return Array.from(new Uint8Array(buffer), b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        function decodeCredentialDigest() {
-            return _XD.map(b => (b ^ _XK).toString(16).padStart(2, '0')).join('');
-        }
-
-        function secureCompare(a, b) {
-            if (a.length !== b.length) return false;
-            let diff = 0;
-            for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-            return diff === 0;
-        }
-
-        async function verifyAdminPassword(password) {
-            const attempt = await sha256Hex(password);
-            return secureCompare(attempt, decodeCredentialDigest());
-        }
-
-        async function getAdminSessionDigest() {
-            if (!_adminSessionDigest) {
-                _adminSessionDigest = await sha256Hex(`${decodeCredentialDigest()}\x00cq_sess_v1`);
-            }
-            return _adminSessionDigest;
-        }
-
-        async function grantAdminSession() {
-            sessionStorage.setItem(ADMIN_STORAGE_KEY, await getAdminSessionDigest());
+        function waitForFirebaseUser() {
+            return new Promise(resolve => {
+                if (!window.firebase || !firebase.auth) return resolve(null);
+                const unsubscribe = firebase.auth().onAuthStateChanged(user => { unsubscribe(); resolve(user); });
+            });
         }
 
         async function hasAdminSession() {
-            const stored = sessionStorage.getItem(ADMIN_STORAGE_KEY);
-            if (!stored) return false;
-            return secureCompare(stored, await getAdminSessionDigest());
-        }
-
-        async function revokeAdminSession() {
-            sessionStorage.removeItem(ADMIN_STORAGE_KEY);
-            _adminSessionDigest = null;
+            const user = await waitForFirebaseUser();
+            return !!user && user.email === ADMIN_EMAIL;
         }
 
         /* --- AuthService : couche prête pour bascule API --- */
@@ -3484,28 +3450,26 @@ window.addEventListener("firebase-ready", () => cqGetQuizzes());
 
         function submitAdminPassword(event) {
             event.preventDefault();
-            const input = document.getElementById('admin-password-input');
-            const error = document.getElementById('admin-password-error');
+            const input = document.getElementById("admin-password-input");
+            const error = document.getElementById("admin-password-error");
             const submitBtn = event.target.querySelector('button[type="submit"]');
 
-            error.textContent = '';
+            error.textContent = "";
             submitBtn.disabled = true;
 
-            verifyAdminPassword(input.value).then(valid => {
-                submitBtn.disabled = false;
-                if (valid) {
-                    grantAdminSession().then(() => {
-                        closeSettings();
-                        showView('view-admin-creation-quiz');
-                    });
-                    return;
-                }
-                error.textContent = 'Mot de passe incorrect.';
-                input.focus();
-            }).catch(() => {
-                submitBtn.disabled = false;
-                error.textContent = 'Erreur de vérification.';
-            });
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+                .then(() => firebase.auth().signInWithEmailAndPassword(ADMIN_EMAIL, input.value))
+                .then(() => {
+                    submitBtn.disabled = false;
+                    closeSettings();
+                    showView("view-admin-creation-quiz");
+                })
+                .catch(err => {
+                    submitBtn.disabled = false;
+                    const wrong = err && (err.code === "auth/wrong-password" || err.code === "auth/invalid-credential");
+                    error.textContent = wrong ? "Mot de passe incorrect." : "Erreur de vérification.";
+                    if (wrong) input.focus();
+                });
         }
 
         /* --- ADMIN CREATION TOOL FUNCTIONS --- */

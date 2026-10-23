@@ -13,11 +13,15 @@
         appId: "1:1037250532627:web:93283cff30f52a2b59f6e6"
     });
 
-    firebase.auth().signInAnonymously()
-        .then((cred) => {
-            window.firebaseUser = cred.user;
-            window.firebaseDB = firebase.firestore();
-            window.dispatchEvent(new Event("firebase-ready"));
-        })
-        .catch((err) => console.warn("[Firebase] connexion anonyme échouée", err));
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            auth.signInAnonymously().catch((err) => console.warn("[Firebase] connexion anonyme échouée", err));
+            return;
+        }
+        window.firebaseUser = user;
+        window.firebaseDB = firebase.firestore();
+        window.dispatchEvent(new Event("firebase-ready"));
+    });
 })();
