@@ -5,12 +5,12 @@
     }
 
     firebase.initializeApp({
-        apiKey: "AIzaSyB6CcjbibxW5OymcvHcliz2fOgPTuGuaUk",
-        authDomain: "coasterquiz-13534.firebaseapp.com",
-        projectId: "coasterquiz-13534",
-        storageBucket: "coasterquiz-13534.firebasestorage.app",
-        messagingSenderId: "9495944351",
-        appId: "1:9495944351:web:50f79c39bfa6e0a30396aa"
+        apiKey: "AIzaSyDiIdJONmWLOuksdD3zrx24BXkbxMX9hvU",
+        authDomain: "coasterquiz-3628b.firebaseapp.com",
+        projectId: "coasterquiz-3628b",
+        storageBucket: "coasterquiz-3628b.firebasestorage.app",
+        messagingSenderId: "1037250532627",
+        appId: "1:1037250532627:web:93283cff30f52a2b59f6e6"
     });
 
     firebase.auth().signInAnonymously()
