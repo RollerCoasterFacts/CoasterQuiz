@@ -3,92 +3,42 @@ const QUESTION_AUDIO_VOLUME = 0.8;
 // FIRESTORE SYNC LAYER
 // ============================================
 const FirestoreSync = (() => {
-    let _quizzesCache = null;
-    let _isSyncing = false;
-
-    // Clé pour stocker données locales si Firestore down
-    const LOCAL_STORAGE_KEY = 'cq_quizzes_backup';
-
-    async function loadQuizzesFromFirestore() {
-        if (!window.firebaseDB) {
-            console.warn("[Firestore] DB not ready, using localStorage");
-            return _loadFromLocalStorage();
-        }
-
-        try {
-            const userId = window.firebaseUser?.uid;
-            if (!userId) return [];
-
-            const snapshot = await window.firebaseDB.collection('users').doc(userId).collection('quizzes').get();
-            const quizzes = [];
-            snapshot.forEach(doc => {
-                quizzes.push({ id: doc.id, ...doc.data() });
-            });
-
-            _quizzesCache = quizzes;
-            _saveToLocalStorage(quizzes); // Backup local
-            return quizzes;
-        } catch (error) {
-            console.warn("[Firestore] Erreur chargement, fallback localStorage:", error);
-            return _loadFromLocalStorage();
-        }
+    function _ctx() {
+        const db = window.firebaseDB;
+        const uid = window.firebaseUser && window.firebaseUser.uid;
+        return db && uid ? { db, col: db.collection("users").doc(uid).collection("quizzes") } : null;
     }
 
-    async function saveQuizzesToFirestore(quizzes) {
-        _saveToLocalStorage(quizzes); // Toujours sauvegarder local d'abord
-
-        if (!window.firebaseDB || _isSyncing) return;
-
+    async function load() {
+        const ctx = _ctx();
+        if (!ctx) return null;
         try {
-            _isSyncing = true;
-            const userId = window.firebaseUser?.uid;
-            if (!userId) return;
-
-            const userRef = window.firebaseDB.collection('users').doc(userId);
-
-            // Supprimer anciens quizzes
-            const snapshot = await userRef.collection('quizzes').get();
-            for (const doc of snapshot.docs) {
-                await doc.ref.delete();
-            }
-
-            // Sauvegarder nouveaux
-            for (const quiz of quizzes) {
-                await userRef.collection('quizzes').add(quiz);
-            }
-
-            console.log("[Firestore] Quizzes synchronisés avec succès");
-            _quizzesCache = quizzes;
-        } catch (error) {
-            console.warn("[Firestore] Erreur sauvegarde:", error);
-        } finally {
-            _isSyncing = false;
-        }
-    }
-
-    function _loadFromLocalStorage() {
-        try {
-            const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-            return raw ? JSON.parse(raw) : [];
-        } catch {
-            return [];
-        }
-    }
-
-    function _saveToLocalStorage(quizzes) {
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(quizzes));
+            const snap = await ctx.col.get();
+            return snap.docs.map(d => d.data());
         } catch (e) {
-            console.warn("[LocalStorage] Quota dépassé:", e);
+            console.warn("[Firestore] chargement échoué", e);
+            return null;
         }
     }
 
-    return {
-        load: loadQuizzesFromFirestore,
-        save: saveQuizzesToFirestore,
-        getCache: () => _quizzesCache
-    };
+    async function save(quizzes) {
+        const ctx = _ctx();
+        if (!ctx) return;
+        try {
+            const snap = await ctx.col.get();
+            const batch = ctx.db.batch();
+            snap.docs.forEach(d => batch.delete(d.ref));
+            quizzes.forEach(q => batch.set(ctx.col.doc(), q));
+            await batch.commit();
+        } catch (e) {
+            console.warn("[Firestore] sauvegarde échouée", e);
+        }
+    }
+
+    return { load, save };
 })();
+
+window.addEventListener("firebase-ready", () => cqGetQuizzes());
 
         const QUIZ_REGISTRY = {
             'test-quiz-1': {
