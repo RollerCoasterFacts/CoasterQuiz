@@ -58,7 +58,7 @@
 
         .coaster-bg {
             position: absolute; inset: 0; z-index: 0; opacity: 0.08;
-            background-image: url('rollercoaster.png');
+            background-image: url('../assets/rollercoaster.png');
             background-size: cover; background-position: center; background-repeat: no-repeat;
             pointer-events: none;
         }

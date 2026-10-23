@@ -20,10 +20,11 @@ Application web interactive de création et de jeu de quiz avec plusieurs modes 
 ## Structure
 
 - `index.html` - Interface utilisateur
-- `script.js` - Logique applicative
-- `styles.css` - Styles (Tailwind CSS)
-- `audio/` - Fichiers audio (optionnel)
-- `rollercoaster.png` - Image de fond
+- `js/script.js` - Logique applicative
+- `js/audio.js` - Gestion audio
+- `css/styles.css` - Styles
+- `assets/` - Images (fond `rollercoaster.png`)
+- `docs/` - Notes (liste des montagnes, to-do)
 
 ## Technologies
 
